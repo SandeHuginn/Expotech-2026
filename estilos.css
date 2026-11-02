@@ -1,0 +1,23 @@
+.dimensoes_tela{
+    width: 900;
+    height: 1440px;
+
+}
+
+.cabecalho_nome_programa{
+    font-family: 'Times New Roman', Times, serif; 
+    font-size: 14;
+    border: 2px solid black;
+    border-radius: 15px; 
+    text-align: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.divisoria_conteudo{
+    width: 1405px;
+    align-items: center;
+    height: 1340px;
+    border: 2px solid black;
+    border-radius: 15px;
+}

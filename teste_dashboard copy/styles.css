@@ -1,0 +1,257 @@
+* {
+    box-sizing: border-box;
+}
+
+.grafico_pizza{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #ff6384 0% 40%,
+        #36a2eb 40% 75%,
+        #cc65fe 75% 100%
+    );
+}
+
+.estilo-background{
+    background: linear-gradient(
+        135deg, 
+        #6b85ac 0%,
+        #58729b 25%,
+        #6991d1 50%,
+        #406397 75%,
+        #1d3f74 100%
+    ); 
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.estilo_titulo{
+    background-color: rgb(10, 1, 61);
+    text-align: center;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-radius: 12px;
+    color: rgb(188, 188, 209);
+    width: 100%;
+    height: 70px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.estilo_quadro{
+    border: 1px solid;
+    background-color: rgb(58, 111, 211);
+    width: 100%;
+    height: 380px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.estilo_sub{
+    border: 1px solid blue;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-radius: 12px;
+    width: 300px;
+    height: 35px;
+    background-color:rgb(10, 1, 61);
+    color: rgb(188, 188, 209);
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 5px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.div_partes_da_casa_barra{
+    background-color: rgb(10, 1, 61);
+    border-radius: 12px;
+    width: 100%;
+    margin-top: 10px;
+    height: 85px; /* Aumentado ligeiramente para acomodar o botão */
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    overflow: visible; /* Garante que o menu flutuante não seja cortado */
+}
+
+.div_partes_da_casa_filhos {
+    background-color: rgb(58, 111, 211);
+    width: 20%;
+    height: 60px;
+    margin: 5px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Separa o texto (esquerda) e o botão (direita) */
+    padding: 0 12px; /* Margem interna nas laterais */
+    
+}
+
+.div_partes_da_casa_filhos_2{
+    background-color: rgb(58, 111, 211);
+    width: 265px;
+    height: 60px;
+    margin: 5px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Separa o texto (esquerda) e o botão (direita) */
+   
+    
+}
+
+
+.estilo_titulo_2{
+    background-color: rgb(10, 1, 61);
+    text-align: center;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-radius: 12px;
+    color: rgb(188, 188, 209);
+    width: 100%;
+    height: 70px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    margin-top: 30px;
+}
+
+.ajuste_lateral_conteudo{
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.bloco_coluna{
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+    align-items: center;
+}
+
+.div_critico{
+    width: 100%;
+    height: 90px;
+    border-radius: 12px;
+    background-color: rgb(10, 1, 61);
+    display: flex;
+}
+
+.estilo_quadro_2{
+    border: 1px solid;
+    background-color: rgb(58, 111, 211);
+    width: 100%;
+    height: 380px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    justify-content: center;
+}
+
+/* --- ESTILOS DO MINI MENU NAS PARTES DA CASA --- */
+
+.estilo_mini_menu {
+    position: relative;
+    display: inline-block;
+}
+
+.botao_mini_menu {
+    background-color: rgb(10, 1, 61);
+    color: rgb(188, 188, 209);
+    width: 32px;
+    height: 32px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+
+}
+
+.botao_mini_menu:hover {
+    background-color: #1d3f74;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px); 
+    left: 0;
+    width: 240px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 8px;
+    z-index: 9999;
+    
+    /* CORREÇÃO: Força os itens a organizarem-se em coluna (um abaixo do outro) */
+    flex-direction: column; 
+    gap: 4px; /* Pequeno espaçamento entre os quartos */
+}
+
+.dropdown-menu.show {
+    display: flex; 
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    width: 100%; /* Garante que cada item ocupa toda a largura da caixa */
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    gap: 10px;
+    transition: background 0.15s;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f3f4;
+}
+
+.dropdown-item.selected {
+    border: 1.5px solid #000;
+    background-color: #e9eef6;
+}
+
+.icon-area {
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    color: #444746;
+}
+
+.text-area {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f1f1f;
+}
+
+.description {
+    font-size: 11px;
+    color: #5e5e5e;
+}
+
+.quadro_grafico_individual{
+    width : 100%;
+    height: 350px;
+    background-color:rgb(10, 1, 61);
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px;
+    border-radius: 12px;
+}

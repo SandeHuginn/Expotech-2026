@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel = "stylesheet" href = "styles.css">
+    <script src = "script.js" defer></script>
+</head>
+
+<body class = "estilo-background">
+    <header>
+        <div>
+            <h1 class = "estilo_titulo">
+                SmartHome Monitor - Sistema Inteligente de Consumo e Manutenção
+            </h1>
+        </div>
+    </header>
+
+    <div class = "ajuste_lateral_conteudo">
+        <div class = "bloco_coluna">
+            <div class = "estilo_sub">
+                Balanço de energia geral
+            </div>
+            <div class = "estilo_quadro">
+                <div class = "grafico_pizza" id = "graficoPizza"></div>
+            </div>
+        </div>
+        
+        <div class = "bloco_coluna">
+            <div class = "estilo_sub">
+                Aparelhos em estado crítico
+            </div>
+            <div class = "estilo_quadro_2">
+                <div class = "div_critico">
+
+                </div>
+                <div class = "div_critico">
+                    
+                </div>
+                <div class = "div_critico">
+                    
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+    
+    
+    <div class="estilo_titulo_2">
+        <h2>Partes da casa separadas</h2>
+    </div>
+
+    <div class="div_partes_da_casa_barra">
+    <!-- Parte da Casa 1 -->
+    <div class="div_partes_da_casa_filhos">
+        <!-- Texto fixo ao lado -->
+        <span class="texto-parte">Quartos</span>
+
+        <!-- Botão com o Mini Menu / Dropdown -->
+        <div class="estilo_mini_menu">
+            <button class="botao_mini_menu" onclick="toggleMenu(event, 'menuQuarto')">
+                <!-- <span class="material-symbols-outlined" style="font-size: 18px;">expand_more</span> -->
+            </button>
+
+            <!-- Caixa de Opções Flutuante -->
+            <div class="dropdown-menu" id="menuQuarto">
+                <div class="dropdown-item selected">
+                    <div class="icon-area">
+                        <!-- <span class="material-symbols-outlined">check</span> -->
+                    </div>
+                    <div class="text-area">
+                        <span class="title">Quarto 1</span>
+                        <span class="description"></span>
+                    </div>
+                </div>
+                <div class="dropdown-item">
+                    <div class="icon-area">
+                        <!-- <span class="material-symbols-outlined">lock</span> -->
+                    </div>
+                    <div class="text-area">
+                        <span class="title">Quarto 2</span>
+                        <span class="description"></span>
+                    </div>
+                    
+                </div>
+                
+                <div class="dropdown-item">
+                    <div class="icon-area">
+                        <!-- <span class="material-symbols-outlined">lock</span> -->
+                    </div>
+                    <div class="text-area">
+                        <span class="title">Quarto 3</span>
+                        <span class="description"></span>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Outros blocos vazios (pode replicar a estrutura depois se quiser) -->
+    <div class="div_partes_da_casa_filhos"><span class="texto-parte"><button class = "div_partes_da_casa_filhos_2">Sala</button></span></div>
+    <div class="div_partes_da_casa_filhos"><span class="texto-parte"><button class = "div_partes_da_casa_filhos_2">Cozinha</button></span></div>
+    <div class="div_partes_da_casa_filhos"><span class="texto-parte"><button class = "div_partes_da_casa_filhos_2">Banheiro</button></span></div>
+    <div class="div_partes_da_casa_filhos"><span class="texto-parte"><button class = "div_partes_da_casa_filhos_2">Área de Serviços</button></span></div>
+
+    </div>
+    <div class = "quadro_grafico_individual"></div>
+    <button onclick = "mudarDados()">Atualizar Dados</button>
+</body>
+</html>
