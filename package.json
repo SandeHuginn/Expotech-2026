@@ -1,0 +1,30 @@
+{
+  "name": "expotech-2026",
+  "version": "1.0.0",
+  "description": "",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon backend/src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaopaulomathiasdaluzpavan/Expotech-2026.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/joaopaulomathiasdaluzpavan/Expotech-2026/issues"
+  },
+  "homepage": "https://github.com/joaopaulomathiasdaluzpavan/Expotech-2026#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
