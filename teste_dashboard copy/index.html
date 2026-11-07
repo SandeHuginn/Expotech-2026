@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>SmartHome Monitor</title>
     <link rel = "stylesheet" href = "styles.css">
     <script src = "script.js" defer></script>
 </head>
@@ -28,7 +28,7 @@
         <div class="grafico_pizza" id="graficoPizza"></div>
 
         <!-- Indicadores recebidos do backend -->
-        <div class="indicadores-consumo">
+         <div class="indicadores-consumo">
 
             <div class="indicador">
                 <span class="indicador-titulo">Consumo atual</span>
@@ -45,27 +45,15 @@
                 <strong id="variacaoConsumo">--%</strong>
             </div>
 
+        </div>
     </div>
-
-        </div>
-        </div>
+</div>
         
         <div class = "bloco_coluna">
             <div class = "estilo_sub">
-                Aparelhos em estado crítico
+                Aparelhos com maior consumo
             </div>
-            <div class = "estilo_quadro_2">
-                <div class = "div_critico">
-
-                </div>
-                <div class = "div_critico">
-                    
-                </div>
-                <div class = "div_critico">
-                    
-                </div>
-
-            </div>
+            <div class="estilo_quadro_2" id="rankingAparelhos"></div>
         </div>
         
     </div>

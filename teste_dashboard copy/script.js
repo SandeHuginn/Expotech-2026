@@ -2,6 +2,9 @@
 // Endereço da API do backend
 const API_URL = 'http://localhost:3000/api/dashboard/consumo';
 
+// Endereço da API do ranking de aparelhos
+const APARELHOS_API_URL = 'http://localhost:3000/api/dashboard/aparelhos';
+
 // Busca os dados do backend
 async function carregarResumoConsumo() {
     try {
@@ -118,5 +121,69 @@ window.addEventListener('click', function() {
     });
 });
 
+
+// Busca e apresenta o ranking dos aparelhos
+async function carregarRankingAparelhos() {
+    try {
+        const resposta = await fetch(APARELHOS_API_URL);
+
+        if (!resposta.ok) {
+            throw new Error(`Erro HTTP: ${resposta.status}`);
+        }
+
+        const dados = await resposta.json();
+
+        console.log('Ranking de aparelhos recebido:');
+        console.log(dados);
+
+        atualizarRankingAparelhos(dados.aparelhos);
+
+    } catch (erro) {
+        console.error('Não foi possível carregar o ranking:', erro);
+    }
+}
+
+// Atualiza os aparelhos apresentados na dashboard
+function atualizarRankingAparelhos(aparelhos) {
+    const container = document.getElementById('rankingAparelhos');
+
+    if (!container) {
+        return;
+    }
+
+    // Limpa o conteúdo anterior
+    container.innerHTML = '';
+
+    aparelhos.forEach((aparelho, indice) => {
+
+        // Cria o espaço visual de cada aparelho
+        const elemento = document.createElement('div');
+        elemento.classList.add('div_critico');
+
+        // Cria a posição no ranking
+        const posicao = document.createElement('strong');
+        posicao.textContent = `${indice + 1}º lugar`;
+
+        // Cria o nome do aparelho
+        const nome = document.createElement('span');
+        nome.textContent = aparelho.nome;
+
+        // Cria o consumo do aparelho
+        const consumo = document.createElement('span');
+        consumo.textContent =
+            `${aparelho.consumoKwh.toLocaleString('pt-BR')} kWh`;
+
+        // Adiciona as informações ao elemento
+        elemento.appendChild(posicao);
+        elemento.appendChild(nome);
+        elemento.appendChild(consumo);
+
+        // Adiciona o aparelho à dashboard
+        container.appendChild(elemento);
+    });
+}
+
+
 // Inicia a comunicação com o backend
 window.addEventListener('DOMContentLoaded', carregarResumoConsumo);
+window.addEventListener('DOMContentLoaded', carregarRankingAparelhos);
