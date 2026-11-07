@@ -6,6 +6,7 @@ require('dotenv').config();
 
 // Importando as rotas
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const aparelhosRoutes = require('./routes/aparelhosRoutes');
 
 // Criando a aplicação
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.json());
 
 // Registrando as rotas
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/dashboard/aparelhos', aparelhosRoutes);
 
 // Primeira rota da API
 app.get('/', (req, res) => {
