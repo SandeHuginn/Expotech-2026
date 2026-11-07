@@ -75,6 +75,7 @@ backend/
 |---|---|---|
 | GET | `/` | Verificar o funcionamento do servidor |
 | GET | `/api/dashboard/consumo` | Consultar o resumo do consumo e dos gastos estimados |
+| GET | `/api/dashboard/aparelhos` | Consultar os três aparelhos com maior consumo |
 
 ### GET `/api/dashboard/consumo`
 
@@ -109,6 +110,48 @@ Retorna os dados de consumo e gastos estimados para o período analisado.
 | `consumo.variacaoPercentual` | Variação percentual do consumo |
 | `gasto.atualReais` | Gasto estimado atual em reais |
 | `gasto.anteriorReais` | Gasto estimado do período anterior |
+
+### GET `/api/dashboard/aparelhos`
+
+Retorna os três aparelhos com maior consumo de energia, ordenados do maior para o menor consumo.
+
+**Resposta de sucesso — HTTP 200**
+
+```json
+{
+  "quantidade": 3,
+  "aparelhos": [
+    {
+      "id": 1,
+      "nome": "Ar-condicionado",
+      "comodo": "Quarto 1",
+      "consumoKwh": 48.5
+    },
+    {
+      "id": 2,
+      "nome": "Chuveiro elétrico",
+      "comodo": "Banheiro",
+      "consumoKwh": 32
+    },
+    {
+      "id": 3,
+      "nome": "Geladeira",
+      "comodo": "Cozinha",
+      "consumoKwh": 21
+    }
+  ]
+} ```
+
+**Descrição dos campos**
+
+| Campo | Descrição |
+|---|---|
+| `quantidade` | Quantidade de aparelhos retornados |
+| `aparelhos` | Lista dos aparelhos com maior consumo |
+| `aparelhos.id` | Identificador do aparelho |
+| `aparelhos.nome` | Nome do aparelho |
+| `aparelhos.comodo` | Cômodo onde o aparelho está localizado |
+| `aparelhos.consumoKwh` | Consumo do aparelho em kWh |
 
 ### Planejados
 
@@ -243,7 +286,9 @@ A estrutura definitiva será alinhada com o integrante responsável pelo banco d
 - [x] Implementação dos cálculos de consumo.
 - [x] Implementação da rota de resumo do consumo.
 - [x] Integração do endpoint de consumo com o frontend.
-- [ ] Implementação das rotas dos aparelhos e cômodos.
+- [x] Implementação do endpoint de ranking dos aparelhos.
+- [x] Integração do ranking de aparelhos com o frontend.
+- [ ] Implementação das rotas de consulta individual de aparelhos e das rotas dos cômodos.
 - [ ] Implementação da detecção de anomalias.
 - [ ] Implementação do chatbot.
 - [ ] Integração com a estrutura definitiva de dados.
@@ -321,3 +366,13 @@ Retorna um resumo do consumo de energia e dos gastos estimados para o período a
 
 
 **Observação:** atualmente, os dados de consumo são simulados e armazenados em arquivos JavaScript. O cálculo do gasto utiliza uma tarifa fixa simulada de R$ 0,92 por kWh. Esses valores serão substituídos ou adaptados quando ocorrer a integração com o banco de dados.
+
+### Versão 0.3.0 — Ranking de aparelhos e integração com frontend
+
+- Criação dos dados simulados dos aparelhos em `backend/src/data/aparelhosData.js`.
+- Implementação da lógica de ordenação e seleção dos três aparelhos com maior consumo.
+- Criação do endpoint `GET /api/dashboard/aparelhos`.
+- Integração do ranking de aparelhos com o frontend utilizando `fetch()`.
+- Atualização do HTML para exibir dinamicamente os aparelhos retornados pela API.
+- Ajustes no CSS para melhorar a apresentação visual do ranking.
+- Documentação do endpoint e do formato dos dados retornados pela API.
