@@ -48,6 +48,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
 }
 
 .estilo_sub{
@@ -254,4 +257,49 @@
     margin-top: 20px;
     border: 1px;
     border-radius: 12px;
+}
+
+/* INDICADORES DE CONSUMO */
+
+.indicadores-consumo {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.indicador {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgb(10, 1, 61);
+    color: rgb(188, 188, 209);
+
+    padding: 12px;
+    border-radius: 10px;
+    flex: 1;
+    text-align: center;
+}
+
+.indicador-titulo {
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.indicador strong {
+    font-size: 18px;
+}
+
+/* Adaptação para telas menores */
+
+@media (max-width: 600px) {
+    .indicadores-consumo {
+        flex-direction: column;
+    }
+
+    .estilo_quadro {
+        height: auto;
+    }
 }

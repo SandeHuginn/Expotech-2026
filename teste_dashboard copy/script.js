@@ -7,34 +7,57 @@ async function carregarResumoConsumo() {
     try {
         const resposta = await fetch(API_URL);
 
-        // Verifica se a requisição foi bem-sucedida
         if (!resposta.ok) {
             throw new Error(`Erro HTTP: ${resposta.status}`);
         }
 
-        // Converte a resposta para objeto JavaScript
         const dados = await resposta.json();
 
         console.log('Dados recebidos do backend:');
         console.log(dados);
 
-        // Atualiza o gráfico com os dados recebidos do backend
+        // Atualiza o gráfico
         atualizarGrafico(
-        [
-            dados.consumo.atualKwh,
-            dados.consumo.anteriorKwh
-        ],
-        [
-            "#ff6384",
-            "#36a2eb"
-        ]
-    );
+            [
+                dados.consumo.atualKwh,
+                dados.consumo.anteriorKwh
+            ],
+            [
+                "#ff6384",
+                "#36a2eb"
+            ]
+        );
+
+        // Atualiza os indicadores
+        atualizarIndicadores(dados);
 
         return dados;
 
     } catch (erro) {
         console.error('Não foi possível carregar os dados:', erro);
     }
+}
+
+// Atualiza os valores numéricos da dashboard
+function atualizarIndicadores(dados) {
+    const consumoAtual = document.getElementById("consumoAtual");
+    const gastoAtual = document.getElementById("gastoAtual");
+    const variacaoConsumo = document.getElementById("variacaoConsumo");
+
+    consumoAtual.textContent =
+        `${dados.consumo.atualKwh.toLocaleString('pt-BR')} kWh`;
+
+    gastoAtual.textContent =
+        dados.gasto.atualReais.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        });
+
+    const variacao = dados.consumo.variacaoPercentual;
+    const sinal = variacao > 0 ? '+' : '';
+
+    variacaoConsumo.textContent =
+        `${sinal}${variacao.toLocaleString('pt-BR')}%`;
 }
 
 // Mantém o gráfico original

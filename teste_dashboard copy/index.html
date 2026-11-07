@@ -22,9 +22,32 @@
             <div class = "estilo_sub">
                 Balanço de energia geral
             </div>
-            <div class = "estilo_quadro">
-                <div class = "grafico_pizza" id = "graficoPizza"></div>
+    <div class="estilo_quadro">
+
+        <!-- Gráfico de comparação do consumo -->
+        <div class="grafico_pizza" id="graficoPizza"></div>
+
+        <!-- Indicadores recebidos do backend -->
+        <div class="indicadores-consumo">
+
+            <div class="indicador">
+                <span class="indicador-titulo">Consumo atual</span>
+                <strong id="consumoAtual">-- kWh</strong>
             </div>
+
+            <div class="indicador">
+                <span class="indicador-titulo">Gasto estimado</span>
+                <strong id="gastoAtual">R$ --</strong>
+            </div>
+
+            <div class="indicador">
+                <span class="indicador-titulo">Variação do consumo</span>
+                <strong id="variacaoConsumo">--%</strong>
+            </div>
+
+    </div>
+
+        </div>
         </div>
         
         <div class = "bloco_coluna">
