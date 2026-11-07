@@ -4,6 +4,9 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+// Importando as rotas
+const dashboardRoutes = require('./routes/dashboardRoutes');
+
 // Criando a aplicação
 const app = express();
 
@@ -13,6 +16,9 @@ const PORT = process.env.PORT || 3000;
 // Configurações do servidor
 app.use(cors());
 app.use(express.json());
+
+// Registrando as rotas
+app.use('/api/dashboard', dashboardRoutes);
 
 // Primeira rota da API
 app.get('/', (req, res) => {
