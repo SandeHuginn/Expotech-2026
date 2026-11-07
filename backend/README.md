@@ -133,21 +133,46 @@ Resposta esperada:
 
 ## 7. Integração com o frontend
 
-O frontend será desenvolvido utilizando HTML, CSS e JavaScript.
+O frontend da dashboard está localizado na pasta `teste_dashboard copy/` e utiliza HTML, CSS e JavaScript.
 
-A comunicação entre frontend e backend será realizada por meio de requisições HTTP, utilizando JSON para troca de informações.
+A comunicação entre frontend e backend é realizada por meio de requisições HTTP utilizando a função `fetch()` do JavaScript. Os dados são transmitidos no formato JSON.
 
-Exemplo de uma futura requisição:
+### Endpoint integrado
+
+**GET `/api/dashboard/consumo`**
+
+Retorna:
+- Consumo atual em kWh.
+- Consumo do período anterior em kWh.
+- Diferença e variação percentual do consumo.
+- Gastos estimados para os dois períodos.
+
+### Exemplo de requisição
 
 ```javascript
-fetch('http://localhost:3000/api/dashboard')
-    .then(response => response.json())
-    .then(dados => {
-        console.log(dados);
-    });
+const resposta = await fetch(
+    'http://localhost:3000/api/dashboard/consumo'
+);
+
+const dados = await resposta.json();
 ```
 
-Os endereços e formatos definitivos serão documentados conforme os endpoints forem implementados.
+### Funcionamento atual
+
+- O frontend solicita os dados ao backend.
+- O backend processa os dados e retorna uma resposta JSON.
+- O JavaScript utiliza os valores recebidos para atualizar o gráfico de comparação de consumo.
+- O botão de atualização realiza uma nova consulta à API.
+
+### Execução durante o desenvolvimento
+
+O backend é iniciado com `npm run dev` e fica disponível em `http://localhost:3000`.
+
+O frontend pode ser aberto separadamente pelo navegador, utilizando o Live Server ou outro servidor local.
+
+O CORS está habilitado no Express para permitir a comunicação entre origens diferentes durante o desenvolvimento.
+
+**Observação:** a integração atual utiliza dados simulados. Os indicadores de aparelhos, cômodos e anomalias ainda dependem da implementação de novos endpoints.
 
 ## 8. Banco de dados
 
@@ -168,13 +193,14 @@ A estrutura definitiva será alinhada com o integrante responsável pelo banco d
 - [x] Criação da estrutura de diretórios.
 - [x] Criação do servidor Express.
 - [x] Implementação da rota inicial de verificação.
-- [ ] Criação dos dados simulados.
-- [ ] Implementação dos cálculos de consumo.
-- [ ] Implementação das rotas do dashboard.
+- [x] Criação de dados simulados para o dashboard.
+- [x] Implementação dos cálculos de consumo e gastos estimados.
+- [x] Implementação do endpoint de resumo do consumo.
+- [x] Integração inicial do frontend com o backend.
+- [x] Atualização do gráfico com dados recebidos da API.
 - [ ] Implementação das rotas dos aparelhos e cômodos.
 - [ ] Implementação da detecção de anomalias.
 - [ ] Implementação do chatbot.
-- [ ] Integração com o frontend.
 - [ ] Integração com a estrutura definitiva de dados.
 
 ## 10. Histórico de alterações
