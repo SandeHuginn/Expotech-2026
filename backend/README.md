@@ -66,19 +66,54 @@ backend/
 - Consultar gastos e consumo por cômodo.
 - Fornecer sugestões de economia energética.
 
+
 ## 5. Endpoints da API
 
-### Implementado
+### Implementados
 
 | Método | Endpoint | Descrição |
 |---|---|---|
 | GET | `/` | Verificar o funcionamento do servidor |
+| GET | `/api/dashboard/consumo` | Consultar o resumo do consumo e dos gastos estimados |
+
+### GET `/api/dashboard/consumo`
+
+Retorna os dados de consumo e gastos estimados para o período analisado.
+
+**Exemplo de resposta — HTTP 200**
+
+```json
+{
+  "periodo": "Últimos 30 dias",
+  "consumo": {
+    "atualKwh": 128.5,
+    "anteriorKwh": 115.2,
+    "diferencaKwh": 13.3,
+    "variacaoPercentual": 11.55
+  },
+  "gasto": {
+    "atualReais": 118.22,
+    "anteriorReais": 105.98
+  }
+}
+```
+
+**Descrição dos campos**
+
+| Campo | Descrição |
+|---|---|
+| `periodo` | Período de referência da consulta |
+| `consumo.atualKwh` | Consumo atual em kWh |
+| `consumo.anteriorKwh` | Consumo do período anterior em kWh |
+| `consumo.diferencaKwh` | Diferença entre os consumos |
+| `consumo.variacaoPercentual` | Variação percentual do consumo |
+| `gasto.atualReais` | Gasto estimado atual em reais |
+| `gasto.anteriorReais` | Gasto estimado do período anterior |
 
 ### Planejados
 
 | Método | Endpoint | Descrição |
-|-----|----------------------|---------------------------------------------|
-| GET | `/api/dashboard` | Consultar indicadores gerais |
+|---|---|---|
 | GET | `/api/aparelhos` | Listar aparelhos |
 | GET | `/api/aparelhos/:id` | Consultar aparelho específico |
 | GET | `/api/comodos` | Listar cômodos |
@@ -86,6 +121,7 @@ backend/
 | GET | `/api/chatbot` | Consultar informações disponíveis para o chatbot |
 
 Os endpoints planejados serão atualizados conforme forem implementados.
+
 
 ## 6. Como executar o projeto
 
@@ -131,48 +167,57 @@ Resposta esperada:
 }
 ```
 
+
 ## 7. Integração com o frontend
 
-O frontend da dashboard está localizado na pasta `teste_dashboard copy/` e utiliza HTML, CSS e JavaScript.
+O frontend utiliza HTML, CSS e JavaScript e está localizado no diretório `teste_dashboard copy/`.
 
-A comunicação entre frontend e backend é realizada por meio de requisições HTTP utilizando a função `fetch()` do JavaScript. Os dados são transmitidos no formato JSON.
+A comunicação com o backend é realizada por meio de requisições HTTP utilizando `fetch()`, com troca de informações no formato JSON.
 
-### Endpoint integrado
+### Consumo da API
 
-**GET `/api/dashboard/consumo`**
+O frontend realiza uma requisição para:
 
-Retorna:
-- Consumo atual em kWh.
-- Consumo do período anterior em kWh.
-- Diferença e variação percentual do consumo.
-- Gastos estimados para os dois períodos.
-
-### Exemplo de requisição
-
-```javascript
-const resposta = await fetch(
-    'http://localhost:3000/api/dashboard/consumo'
-);
-
-const dados = await resposta.json();
+```text
+GET http://localhost:3000/api/dashboard/consumo
 ```
 
-### Funcionamento atual
+Exemplo de implementação:
 
-- O frontend solicita os dados ao backend.
-- O backend processa os dados e retorna uma resposta JSON.
-- O JavaScript utiliza os valores recebidos para atualizar o gráfico de comparação de consumo.
-- O botão de atualização realiza uma nova consulta à API.
+```javascript
+const API_URL = 'http://localhost:3000/api/dashboard/consumo';
 
-### Execução durante o desenvolvimento
+async function carregarResumoConsumo() {
+    const resposta = await fetch(API_URL);
 
-O backend é iniciado com `npm run dev` e fica disponível em `http://localhost:3000`.
+    if (!resposta.ok) {
+        throw new Error(`Erro HTTP: ${resposta.status}`);
+    }
 
-O frontend pode ser aberto separadamente pelo navegador, utilizando o Live Server ou outro servidor local.
+    const dados = await resposta.json();
 
-O CORS está habilitado no Express para permitir a comunicação entre origens diferentes durante o desenvolvimento.
+    console.log(dados);
+}
+```
 
-**Observação:** a integração atual utiliza dados simulados. Os indicadores de aparelhos, cômodos e anomalias ainda dependem da implementação de novos endpoints.
+### Indicadores e gráfico
+
+Os dados recebidos pela API são utilizados para atualizar os elementos da dashboard:
+
+- **Gráfico de consumo:** apresenta a comparação entre o consumo atual e o consumo do período anterior.
+- **Consumo atual:** apresenta o consumo em kWh.
+- **Gasto estimado:** apresenta o valor estimado em reais.
+- **Variação do consumo:** apresenta a diferença percentual entre os períodos.
+
+A atualização dos indicadores e do gráfico ocorre durante o carregamento da dashboard e também por meio do botão de atualização manual.
+
+### Execução da integração
+
+Para testar a comunicação entre frontend e backend:
+
+1. Inicie o backend com `npm run dev`.
+2. Abra o arquivo `index.html` localizado em `teste_dashboard copy/`.
+3. A dashboard realizará a requisição à API e atualizará os indicadores com os dados recebidos.
 
 ## 8. Banco de dados
 
@@ -181,6 +226,7 @@ A implementação do banco de dados não faz parte da responsabilidade do desenv
 Inicialmente, serão utilizados dados simulados em arquivos JSON para desenvolvimento e testes.
 
 A estrutura definitiva será alinhada com o integrante responsável pelo banco de dados, garantindo compatibilidade com as necessidades da API.
+
 
 ## 9. Status do desenvolvimento
 
@@ -193,11 +239,10 @@ A estrutura definitiva será alinhada com o integrante responsável pelo banco d
 - [x] Criação da estrutura de diretórios.
 - [x] Criação do servidor Express.
 - [x] Implementação da rota inicial de verificação.
-- [x] Criação de dados simulados para o dashboard.
-- [x] Implementação dos cálculos de consumo e gastos estimados.
-- [x] Implementação do endpoint de resumo do consumo.
-- [x] Integração inicial do frontend com o backend.
-- [x] Atualização do gráfico com dados recebidos da API.
+- [x] Criação dos dados simulados.
+- [x] Implementação dos cálculos de consumo.
+- [x] Implementação da rota de resumo do consumo.
+- [x] Integração do endpoint de consumo com o frontend.
 - [ ] Implementação das rotas dos aparelhos e cômodos.
 - [ ] Implementação da detecção de anomalias.
 - [ ] Implementação do chatbot.
@@ -264,3 +309,15 @@ Retorna um resumo do consumo de energia e dos gastos estimados para o período a
 - A rota está definida em `backend/src/routes/dashboardRoutes.js`.
 
 **Observação:** os valores são fictícios e a estimativa de gasto utiliza uma tarifa fixa simulada. A integração com o banco de dados será realizada posteriormente.
+
+### Versão 0.2.0 — Resumo do consumo e integração inicial
+
+- Criação da estrutura de dados simulados do dashboard.
+- Implementação dos cálculos de consumo e gastos estimados.
+- Criação do endpoint `GET /api/dashboard/consumo`.
+- Integração inicial entre a dashboard e o backend utilizando `fetch()`.
+- Atualização do gráfico de comparação de consumo com dados da API.
+- Documentação do endpoint e do processo de integração.
+
+
+**Observação:** atualmente, os dados de consumo são simulados e armazenados em arquivos JavaScript. O cálculo do gasto utiliza uma tarifa fixa simulada de R$ 0,92 por kWh. Esses valores serão substituídos ou adaptados quando ocorrer a integração com o banco de dados.
