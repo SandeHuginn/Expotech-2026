@@ -193,3 +193,48 @@ A estrutura definitiva será alinhada com o integrante responsável pelo banco d
 **Módulo:** Backend  
 **Linguagem principal:** JavaScript  
 **Status:** Em desenvolvimento
+
+## Endpoint: Resumo do Consumo
+
+### GET `/api/dashboard/consumo`
+
+Retorna um resumo do consumo de energia e dos gastos estimados para o período analisado.
+
+**Resposta de sucesso — HTTP 200**
+
+```json
+{
+  "periodo": "Últimos 30 dias",
+  "consumo": {
+    "atualKwh": 128.5,
+    "anteriorKwh": 115.2,
+    "diferencaKwh": 13.3,
+    "variacaoPercentual": 11.55
+  },
+  "gasto": {
+    "atualReais": 118.22,
+    "anteriorReais": 105.98
+  }
+}
+```
+
+### Descrição dos campos
+
+| Campo | Descrição |
+|---|---|
+| `periodo` | Período de referência da consulta |
+| `consumo.atualKwh` | Consumo atual em kWh |
+| `consumo.anteriorKwh` | Consumo do período anterior em kWh |
+| `consumo.diferencaKwh` | Diferença entre os consumos |
+| `consumo.variacaoPercentual` | Variação percentual do consumo |
+| `gasto.atualReais` | Gasto estimado atual em reais |
+| `gasto.anteriorReais` | Gasto estimado do período anterior |
+
+### Implementação atual
+
+- Os dados são simulados e estão armazenados em `backend/src/data/dashboardData.js`.
+- Os cálculos são realizados em `backend/src/services/dashboardService.js`.
+- O controller responsável pela resposta HTTP está em `backend/src/controllers/dashboardController.js`.
+- A rota está definida em `backend/src/routes/dashboardRoutes.js`.
+
+**Observação:** os valores são fictícios e a estimativa de gasto utiliza uma tarifa fixa simulada. A integração com o banco de dados será realizada posteriormente.
