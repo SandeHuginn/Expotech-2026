@@ -8,6 +8,7 @@ require('dotenv').config();
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const aparelhosRoutes = require('./routes/aparelhosRoutes');
 const comodosRoutes = require('./routes/comodosRoutes');
+const machineLearningRoutes = require('./routes/machineLearningRoutes');
 
 // Criando a aplicação
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/dashboard/aparelhos', aparelhosRoutes);
 app.use('/api/comodos', comodosRoutes);
+app.use('/api/machine-learning', machineLearningRoutes);
 
 // Primeira rota da API
 app.get('/', (req, res) => {

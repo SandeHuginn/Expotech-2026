@@ -20,6 +20,10 @@ Este repositório contém o desenvolvimento do backend, responsável pelo proces
 | CORS | Controle de acesso entre origens |
 | Dotenv | Gerenciamento de variáveis de ambiente |
 | Nodemon | Reinicialização automática durante o desenvolvimento |
+| Python | Linguagem utilizada na implementação do Machine Learning |
+| Flask | Criação da API Python para disponibilizar o modelo |
+| NumPy | Organização dos dados de consumo |
+| Scikit-learn | Implementação do algoritmo Isolation Forest |
 
 
 ## 3. Estrutura do projeto
@@ -82,6 +86,7 @@ backend/
 | GET | `/api/dashboard/aparelhos/:id` | Consultar um aparelho específico pelo ID |
 | GET | `/api/comodos` | Listar cômodos e seus aparelhos, consumo e gasto estimado |
 | GET | `/api/comodos/:nome` | Consultar um cômodo específico pelo nome |
+| POST | `/api/machine-learning/analisar-consumo` | Analisar o consumo de um aparelho e identificar possíveis anomalias |
 
 ### GET `/api/dashboard/consumo`
 
@@ -253,6 +258,47 @@ GET /api/comodos/Cozinha
 
 **Observação:** nomes com espaços ou caracteres especiais devem ser codificados na URL. No JavaScript, pode-se utilizar `encodeURIComponent(nome)` para isso.
 
+### POST `/api/machine-learning/analisar-consumo`
+
+Recebe o nome de um aparelho e uma lista de registros de consumo em kWh. Os dados são encaminhados para a API Python, que utiliza o algoritmo Isolation Forest, da biblioteca Scikit-learn, para identificar possíveis anomalias.
+
+**Exemplo de requisição**
+
+```json
+{
+  "aparelho": "Geladeira",
+  "consumos": [2.1, 2.3, 2.0, 2.2, 2.4, 2.1, 8.5]
+}
+```
+
+**Resposta de sucesso — HTTP 200**
+
+```json
+{
+  "aparelho": "Geladeira",
+  "quantidadeRegistros": 7,
+  "anomalias": [
+    {
+      "dia": 7,
+      "consumoKwh": 8.5,
+      "classificacao": "Possível anomalia"
+    }
+  ]
+}
+```
+
+**Descrição dos campos**
+
+| Campo | Descrição |
+|---|---|
+| `aparelho` | Nome do aparelho analisado |
+| `quantidadeRegistros` | Quantidade de registros enviados para análise |
+| `anomalias` | Lista de possíveis anomalias identificadas |
+| `dia` | Posição do registro na lista de consumos |
+| `consumoKwh` | Valor do consumo identificado |
+| `classificacao` | Classificação atribuída pelo modelo |
+
+**Observação:** a implementação atual utiliza dados enviados diretamente na requisição. A integração com o histórico real de consumo do banco de dados será realizada posteriormente. Os resultados são indicativos e precisam ser avaliados com um conjunto maior de dados.
 
 ### Planejados
 
@@ -269,6 +315,7 @@ Os endpoints planejados serão atualizados conforme forem implementados.
 
 - Node.js instalado.
 - npm instalado.
+- Python instalado.
 
 ### Instalação
 
@@ -307,6 +354,27 @@ Resposta esperada:
 }
 ```
 
+#### Inicialização da API de Machine Learning
+
+Na pasta principal do projeto, ative o ambiente virtual Python:
+
+```powershell
+.\machine-learning\.venv\Scripts\Activate.ps1
+```
+
+Em seguida, inicie a API Python:
+
+```powershell
+python machine-learning/app.py
+```
+
+A API ficará disponível em:
+
+```text
+http://127.0.0.1:5000
+```
+
+**Importante:** para utilizar o endpoint de Machine Learning, os servidores Node.js e Python precisam estar em execução simultaneamente.
 
 ## 7. Integração com o frontend
 
@@ -387,7 +455,11 @@ A estrutura definitiva será alinhada com o integrante responsável pelo banco d
 - [x] Integração do ranking de aparelhos com o frontend.
 - [x] Implementação das rotas de consulta individual de aparelhos e das rotas dos cômodos.
 - [ ] Validação das consultas individuais e dos cômodos com o MySQL.
-- [ ] Implementação da detecção de anomalias.
+- [x] Implementação inicial da detecção de anomalias com Isolation Forest.
+- [x] Criação da API Python utilizando Flask.
+- [x] Integração entre a API Node.js e a API Python.
+- [x] Teste da análise de consumo por meio do PowerShell.
+- [ ] Integração da análise com o histórico real de consumo do banco de dados.
 - [ ] Implementação do chatbot.
 - [ ] Integração com a estrutura definitiva de dados.
 

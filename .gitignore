@@ -11,3 +11,13 @@ node_modules/
 # Arquivos temporários do sistema
 .DS_Store
 Thumbs.db
+
+# Ambiente virtual Python
+**/.venv/
+
+# Configurações locais do Visual Studio Code
+.vscode/
+
+# Arquivos temporários gerados pelo Python
+__pycache__/
+*.py[cod]
