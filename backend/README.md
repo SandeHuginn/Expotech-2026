@@ -71,7 +71,6 @@ backend/
 
 
 ## 5. Endpoints da API
-
 ### Implementados
 
 | Método | Endpoint | Descrição |
@@ -79,6 +78,10 @@ backend/
 | GET | `/` | Verificar o funcionamento do servidor |
 | GET | `/api/dashboard/consumo` | Consultar o resumo do consumo e dos gastos estimados |
 | GET | `/api/dashboard/aparelhos` | Consultar os três aparelhos com maior consumo |
+| GET | `/api/dashboard/aparelhos/todos` | Listar todos os aparelhos |
+| GET | `/api/dashboard/aparelhos/:id` | Consultar um aparelho específico pelo ID |
+| GET | `/api/comodos` | Listar cômodos e seus aparelhos, consumo e gasto estimado |
+| GET | `/api/comodos/:nome` | Consultar um cômodo específico pelo nome |
 
 ### GET `/api/dashboard/consumo`
 
@@ -156,14 +159,105 @@ Retorna os três aparelhos com maior consumo de energia, ordenados do maior para
 | `aparelhos.comodo` | Cômodo onde o aparelho está localizado |
 | `aparelhos.consumoKwh` | Consumo do aparelho em kWh |
 
+
+### GET `/api/comodos`
+
+Retorna a lista de cômodos identificados a partir dos aparelhos cadastrados, incluindo a quantidade de aparelhos, o consumo total, o gasto estimado e os respectivos aparelhos.
+
+**Resposta de sucesso — HTTP 200**
+
+```json
+{
+  "quantidade": 2,
+  "comodos": [
+    {
+      "nome": "Cozinha",
+      "quantidadeAparelhos": 2,
+      "consumoTotalKwh": 35.5,
+      "aparelhos": [
+        {
+          "id": 1,
+          "nome": "Geladeira",
+          "comodo": "Cozinha",
+          "consumoKwh": 21
+        },
+        {
+          "id": 2,
+          "nome": "Micro-ondas",
+          "comodo": "Cozinha",
+          "consumoKwh": 14.5
+        }
+      ],
+      "gastoEstimadoReais": 32.66
+    }
+  ]
+}
+```
+
+**Descrição dos campos**
+
+| Campo | Descrição |
+|---|---|
+| `quantidade` | Quantidade de cômodos encontrados |
+| `comodos` | Lista de cômodos |
+| `nome` | Nome do cômodo |
+| `quantidadeAparelhos` | Quantidade de aparelhos no cômodo |
+| `consumoTotalKwh` | Soma do consumo dos aparelhos |
+| `aparelhos` | Lista de aparelhos pertencentes ao cômodo |
+| `gastoEstimadoReais` | Gasto estimado com base na tarifa configurada |
+
+
+### GET `/api/comodos/:nome`
+
+Retorna as informações de um cômodo específico, identificado pelo nome, incluindo seus aparelhos, quantidade de aparelhos, consumo total e gasto estimado.
+
+**Exemplo de requisição**
+
+```http
+GET /api/comodos/Cozinha
+```
+
+**Resposta de sucesso — HTTP 200**
+
+```json
+{
+  "nome": "Cozinha",
+  "quantidadeAparelhos": 2,
+  "consumoTotalKwh": 35.5,
+  "aparelhos": [
+    {
+      "id": 1,
+      "nome": "Geladeira",
+      "comodo": "Cozinha",
+      "consumoKwh": 21
+    },
+    {
+      "id": 2,
+      "nome": "Micro-ondas",
+      "comodo": "Cozinha",
+      "consumoKwh": 14.5
+    }
+  ],
+  "gastoEstimadoReais": 32.66
+}
+```
+
+**Possíveis respostas**
+
+| Código HTTP | Descrição |
+|---|---|
+| 200 | Cômodo encontrado |
+| 400 | Nome do cômodo inválido ou ausente |
+| 404 | Cômodo não encontrado |
+| 500 | Erro interno ao consultar o cômodo |
+
+**Observação:** nomes com espaços ou caracteres especiais devem ser codificados na URL. No JavaScript, pode-se utilizar `encodeURIComponent(nome)` para isso.
+
+
 ### Planejados
 
 | Método | Endpoint | Descrição |
 |---|---|---|
-| GET | `/api/aparelhos` | Listar aparelhos |
-| GET | `/api/aparelhos/:id` | Consultar aparelho específico |
-| GET | `/api/comodos` | Listar cômodos |
-| GET | `/api/comodos/:id` | Consultar informações de um cômodo |
 | GET | `/api/chatbot` | Consultar informações disponíveis para o chatbot |
 
 Os endpoints planejados serão atualizados conforme forem implementados.
@@ -291,7 +385,8 @@ A estrutura definitiva será alinhada com o integrante responsável pelo banco d
 - [x] Integração do endpoint de consumo com o frontend.
 - [x] Implementação do endpoint de ranking dos aparelhos.
 - [x] Integração do ranking de aparelhos com o frontend.
-- [ ] Implementação das rotas de consulta individual de aparelhos e das rotas dos cômodos.
+- [x] Implementação das rotas de consulta individual de aparelhos e das rotas dos cômodos.
+- [ ] Validação das consultas individuais e dos cômodos com o MySQL.
 - [ ] Implementação da detecção de anomalias.
 - [ ] Implementação do chatbot.
 - [ ] Integração com a estrutura definitiva de dados.
