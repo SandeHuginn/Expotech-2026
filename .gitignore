@@ -1,0 +1,13 @@
+# Dependências instaladas pelo npm
+node_modules/
+
+# Credenciais e variáveis de ambiente
+.env
+.env.example
+
+# Arquivos de log
+*.log
+
+# Arquivos temporários do sistema
+.DS_Store
+Thumbs.db
