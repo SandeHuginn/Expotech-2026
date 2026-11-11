@@ -9,6 +9,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const aparelhosRoutes = require('./routes/aparelhosRoutes');
 const comodosRoutes = require('./routes/comodosRoutes');
 const machineLearningRoutes = require('./routes/machineLearningRoutes');
+const chatbotRoutes = require('./routes/chatbotRoutes');
 
 // Criando a aplicação
 const app = express();
@@ -25,6 +26,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/dashboard/aparelhos', aparelhosRoutes);
 app.use('/api/comodos', comodosRoutes);
 app.use('/api/machine-learning', machineLearningRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 // Primeira rota da API
 app.get('/', (req, res) => {

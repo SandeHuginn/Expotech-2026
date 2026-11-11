@@ -15,8 +15,8 @@ Este repositório contém o desenvolvimento do backend, responsável pelo proces
 | JavaScript | Linguagem de programação |
 | Node.js | Ambiente de execução |
 | Express | Construção da API |
-|MySQL Workbench|	Administração e consulta do banco|
-|mysql2|	Comunicação entre Node.js e MySQL|
+| MySQL Workbench|	Administração e consulta do banco|
+| mysql2|	Comunicação entre Node.js e MySQL|
 | CORS | Controle de acesso entre origens |
 | Dotenv | Gerenciamento de variáveis de ambiente |
 | Nodemon | Reinicialização automática durante o desenvolvimento |
@@ -24,6 +24,9 @@ Este repositório contém o desenvolvimento do backend, responsável pelo proces
 | Flask | Criação da API Python para disponibilizar o modelo |
 | NumPy | Organização dos dados de consumo |
 | Scikit-learn | Implementação do algoritmo Isolation Forest |
+| Dialogflow ES | Interpretação das mensagens e identificação das intenções do chatbot |
+| Cloudflare Tunnel (cloudflared) | Disponibilização temporária do backend local por meio de um endereço HTTPS público |
+| Webhook | Comunicação entre o Dialogflow e o backend |
 
 
 ## 3. Estrutura do projeto
@@ -87,6 +90,7 @@ backend/
 | GET | `/api/comodos` | Listar cômodos e seus aparelhos, consumo e gasto estimado |
 | GET | `/api/comodos/:nome` | Consultar um cômodo específico pelo nome |
 | POST | `/api/machine-learning/analisar-consumo` | Analisar o consumo de um aparelho e identificar possíveis anomalias |
+| POST | `/api/chatbot/webhook` | Recebe as mensagens enviadas pelo Dialogflow ES e processa as intenções do chatbot |
 
 ### GET `/api/dashboard/consumo`
 
@@ -308,6 +312,39 @@ Recebe o nome de um aparelho e uma lista de registros de consumo em kWh. Os dado
 
 Os endpoints planejados serão atualizados conforme forem implementados.
 
+#### Chatbot — Integração com Dialogflow ES
+
+O chatbot utiliza o Dialogflow ES para interpretar as mensagens enviadas pelos usuários. Quando uma intenção é identificada, o Dialogflow encaminha os dados para o webhook do backend.
+
+**Endpoint:** `POST /api/chatbot/webhook`
+
+**Intenções implementadas:**
+
+| Intenção | Descrição |
+|---|---|
+| `ConsultarConsumoGeral` | Consulta o consumo atual e o gasto estimado da residência. |
+| `ConsultarConsumoComodo` | Consulta a quantidade de aparelhos, o consumo total e o gasto estimado de um cômodo específico. |
+
+**Parâmetros:**
+
+- `comodo`: nome do cômodo informado pelo usuário, utilizado na intenção `ConsultarConsumoComodo`.
+
+**Formato da resposta:**
+
+O backend retorna um objeto JSON com a propriedade `fulfillmentText`, contendo a resposta em linguagem natural que será apresentada pelo Dialogflow.
+
+Exemplo:
+
+```json
+{
+  "fulfillmentText": "O consumo atual da residência é de 128.5 kWh."
+}
+```
+
+**Dependências e situação dos testes:**
+
+A consulta dos dados depende da conexão com o banco de dados MySQL. A comunicação entre Dialogflow, Cloudflare Tunnel e webhook do backend foi testada com sucesso, mas a validação das respostas utilizando dados reais permanece pendente enquanto o banco de dados não estiver disponível.
+
 
 ## 6. Como executar o projeto
 
@@ -375,6 +412,73 @@ http://127.0.0.1:5000
 ```
 
 **Importante:** para utilizar o endpoint de Machine Learning, os servidores Node.js e Python precisam estar em execução simultaneamente.
+
+### 6.1. Como executar o Chatbot
+
+O chatbot utiliza o Dialogflow ES para interpretar as mensagens e o Cloudflare Tunnel para permitir que o Dialogflow acesse o backend executado localmente.
+
+**Pré-requisitos:**
+- Node.js e npm instalados.
+- Dependências do backend instaladas.
+- Agente criado no Dialogflow ES.
+- Cloudflare Tunnel (`cloudflared`) instalado.
+
+**1. Iniciar o backend**
+
+No terminal, dentro da pasta do projeto, execute:
+
+```bash
+npm install
+npm run dev
+```
+
+O backend ficará disponível localmente em `http://localhost:3000`.
+
+**2. Iniciar o Cloudflare Tunnel**
+
+Abra outro terminal e execute:
+
+```powershell
+cloudflared tunnel --url http://localhost:3000
+```
+
+Caso o comando não seja reconhecido no Windows, utilize o caminho completo do executável, ajustando-o conforme a instalação:
+
+```powershell
+& "C:\Program Files (x86)\cloudflared\cloudflared.exe" tunnel --url http://localhost:3000
+```
+
+O Cloudflare fornecerá um endereço público HTTPS semelhante a:
+
+`https://exemplo.trycloudflare.com`
+
+**3. Configurar o Dialogflow ES**
+
+No console do Dialogflow ES:
+
+1. Acesse a opção **Fulfillment**.
+2. Habilite o webhook.
+3. Informe o endereço público gerado pelo Cloudflare, acrescentando `/api/chatbot/webhook`.
+4. Salve as configurações.
+5. Acesse cada intenção implementada e habilite **Enable webhook call for this intent**.
+6. Salve as alterações.
+
+**4. Testar a integração**
+
+Utilize o recurso **Try it now** do Dialogflow para enviar perguntas como:
+
+- Quanto de energia consumimos?
+- Quanto a cozinha está consumindo?
+- Qual é o consumo do banheiro?
+
+**Observações importantes:**
+
+- O endereço do Cloudflare Quick Tunnel é temporário e pode mudar quando o túnel for reiniciado.
+- Sempre que isso acontecer, atualize o endereço configurado no Dialogflow.
+- Os terminais do backend e do Cloudflare precisam permanecer abertos durante os testes.
+- O Cloudflare Quick Tunnel é utilizado para desenvolvimento e testes, não como configuração definitiva de produção.
+- As consultas que dependem dos dados reais precisam de uma conexão funcional com o MySQL.
+
 
 ## 7. Integração com o frontend
 
@@ -460,7 +564,10 @@ A estrutura definitiva será alinhada com o integrante responsável pelo banco d
 - [x] Integração entre a API Node.js e a API Python.
 - [x] Teste da análise de consumo por meio do PowerShell.
 - [ ] Integração da análise com o histórico real de consumo do banco de dados.
-- [ ] Implementação do chatbot.
+- [x] Criação do agente e configuração das intenções no Dialogflow ES.
+- [x] Implementação do webhook do chatbot no backend.
+- [x] Integração do Dialogflow ES com o backend utilizando Cloudflare Tunnel.
+- [ ] Validação das consultas do chatbot utilizando dados reais do MySQL.
 - [ ] Integração com a estrutura definitiva de dados.
 
 ## 10. Histórico de alterações
