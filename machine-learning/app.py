@@ -15,23 +15,28 @@ def inicio():
 
 
 # Rota para analisar o consumo de um aparelho.
+
 @app.route('/api/analisar-consumo', methods=['POST'])
 def analisar():
-    dados = request.get_json()
+    dados = request.get_json(silent=True)
 
-    # Verifica se os dados foram enviados corretamente.
-    if not dados or 'aparelho' not in dados or 'consumos' not in dados:
+    if not isinstance(dados, dict):
         return jsonify({
-            "erro": "Informe o aparelho e a lista de consumos."
+            "erro": "Envie um objeto JSON válido."
         }), 400
 
-    # Executa o algoritmo de Machine Learning.
-    resultado = analisar_consumo(
-        dados['aparelho'],
-        dados['consumos']
-    )
+    try:
+        resultado = analisar_consumo(
+            dados.get('aparelho'),
+            dados.get('consumos')
+        )
 
-    return jsonify(resultado)
+        return jsonify(resultado), 200
+
+    except ValueError as erro:
+        return jsonify({
+            "erro": str(erro)
+        }), 400
 
 
 # Inicia o servidor Python.

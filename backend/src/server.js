@@ -36,7 +36,28 @@ app.get('/', (req, res) => {
     });
 });
 
+
+// Resposta para rotas que não existem
+app.use((req, res) => {
+    res.status(404).json({
+        mensagem: 'Rota não encontrada.'
+    });
+});
+
+// Tratamento global de erros
+app.use((err, req, res, next) => {
+    console.error('Erro interno do servidor:', err);
+
+    res.status(err.status || err.statusCode || 500).json({
+        mensagem:
+            err.status === 400 || err.statusCode === 400
+                ? 'Requisição inválida.'
+                : 'Erro interno do servidor.'
+    });
+});
+
 // Inicializando o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
+

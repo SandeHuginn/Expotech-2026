@@ -1,24 +1,35 @@
+
 import numpy as np
 from sklearn.ensemble import IsolationForest
 
 
 def analisar_consumo(aparelho, consumos):
-    # Organiza os consumos no formato esperado pelo Scikit-learn.
-    dados = np.array(consumos).reshape(-1, 1)
+    if not isinstance(aparelho, str) or not aparelho.strip():
+        raise ValueError("Nome do aparelho inválido.")
 
-    # Cria o modelo de detecção de anomalias.
+    if not isinstance(consumos, list) or len(consumos) < 5:
+        raise ValueError(
+            "Informe pelo menos 5 registros de consumo."
+        )
+
+    try:
+        dados = np.asarray(consumos, dtype=float).reshape(-1, 1)
+    except (ValueError, TypeError):
+        raise ValueError("Os consumos devem ser numéricos.")
+
+    if not np.isfinite(dados).all() or (dados < 0).any():
+        raise ValueError(
+            "Os consumos devem ser finitos e não negativos."
+        )
+
     modelo = IsolationForest(
         contamination=0.15,
         random_state=42
     )
 
-    # Treina o modelo com os dados recebidos.
     modelo.fit(dados)
-
-    # Classifica os registros.
     resultados = modelo.predict(dados)
 
-    # Armazena as possíveis anomalias encontradas.
     anomalias = []
 
     for indice, resultado in enumerate(resultados):
@@ -29,7 +40,6 @@ def analisar_consumo(aparelho, consumos):
                 "classificacao": "Possível anomalia"
             })
 
-    # Monta o resultado da análise.
     return {
         "aparelho": aparelho,
         "quantidadeRegistros": len(consumos),

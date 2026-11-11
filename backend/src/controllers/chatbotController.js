@@ -57,10 +57,13 @@ async function processarMensagem(req, res) {
             }
 
             // Monta a resposta com os dados encontrados.
+
             const resposta =
-                `O cômodo ${comodo.nome} possui ${comodo.quantidadeAparelhos} aparelhos. ` +
+                `O cômodo ${comodo.nome} possui ${comodo.quantidadeAparelhos} ` +
+                `${comodo.quantidadeAparelhos === 1 ? 'aparelho' : 'aparelhos'}. ` +
                 `O consumo total é de ${comodo.consumoTotalKwh} kWh, ` +
                 `com gasto estimado de R$ ${comodo.gastoEstimadoReais.toFixed(2)}.`;
+
 
             return res.status(200).json({
                 fulfillmentText: resposta

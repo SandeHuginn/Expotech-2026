@@ -1,54 +1,112 @@
-// Importa a conexão com o MySQL.
+
 const conexao = require('../config/database');
 
-// Importa os valores simulados ainda utilizados pelo dashboard.
-const dashboardData = require('../data/dashboardData');
-
-// Calcula os indicadores de consumo e gasto apresentados no dashboard.
-async function obterResumoConsumo() {
-
-    // Soma o consumo de todos os aparelhos cadastrados no banco.
+// Consulta a tarifa configurada no MySQL.
+async function obterTarifa() {
     const [linhas] = await conexao.query(`
-        SELECT COALESCE(SUM(consumo_kwh), 0) AS consumoAtualKwh
+        SELECT tarifa_kwh
+        FROM configuracoes_energia
+        WHERE id = 1
+    `);
+
+    if (linhas.length === 0) {
+        throw new Error('Tarifa de energia não configurada.');
+    }
+
+    return Number(linhas[0].tarifa_kwh);
+}
+
+// Calcula os indicadores de consumo e gasto.
+async function obterResumoConsumo() {
+    const tarifa = await obterTarifa();
+
+    // Consumo cadastrado dos aparelhos, sem período definido.
+    const [aparelhos] = await conexao.query(`
+        SELECT COALESCE(SUM(consumo_kwh), 0) AS total
         FROM aparelhos
     `);
 
-    const consumoAtual = Number(linhas[0].consumoAtualKwh);
+    // Histórico: últimos 30 dias e 30 dias anteriores.
+    const [leituras] = await conexao.query(`
+        SELECT
+            COUNT(CASE
+                WHEN data_leitura >= CURDATE() - INTERVAL 29 DAY
+                THEN 1 END
+            ) AS quantidadeAtual,
 
-    // Valores de referência que ainda são simulados.
-    const consumoAnterior = dashboardData.consumoAnteriorKwh;
-    const tarifa = dashboardData.tarifaPorKwh;
+            COUNT(CASE
+                WHEN data_leitura >= CURDATE() - INTERVAL 59 DAY
+                 AND data_leitura < CURDATE() - INTERVAL 29 DAY
+                THEN 1 END
+            ) AS quantidadeAnterior,
 
-    // Calcula o gasto estimado utilizando a tarifa configurada.
-    const gastoAtual = consumoAtual * tarifa;
-    const gastoAnterior = consumoAnterior * tarifa;
+            COALESCE(SUM(CASE
+                WHEN data_leitura >= CURDATE() - INTERVAL 29 DAY
+                THEN consumo_kwh ELSE 0 END
+            ), 0) AS consumoAtual,
 
-    // Calcula a diferença entre consumo atual e anterior.
-    const diferencaConsumo = consumoAtual - consumoAnterior;
+            COALESCE(SUM(CASE
+                WHEN data_leitura >= CURDATE() - INTERVAL 59 DAY
+                 AND data_leitura < CURDATE() - INTERVAL 29 DAY
+                THEN consumo_kwh ELSE 0 END
+            ), 0) AS consumoAnterior
+        FROM leituras_consumo
+        WHERE data_leitura BETWEEN
+            CURDATE() - INTERVAL 59 DAY AND CURDATE()
+    `);
 
-    // Evita divisão por zero no cálculo percentual.
-    const variacaoPercentual = consumoAnterior === 0
-        ? 0
-        : (diferencaConsumo / consumoAnterior) * 100;
+    const historicoDisponivel =
+        Number(leituras[0].quantidadeAtual) > 0;
 
-    // Retorna os dados organizados para o frontend.
+    const anteriorDisponivel =
+        Number(leituras[0].quantidadeAnterior) > 0;
+
+    const consumoAtual = historicoDisponivel
+        ? Number(leituras[0].consumoAtual)
+        : Number(aparelhos[0].total);
+
+    const consumoAnterior = anteriorDisponivel
+        ? Number(leituras[0].consumoAnterior)
+        : null;
+
+    const diferenca = consumoAnterior === null
+        ? null
+        : consumoAtual - consumoAnterior;
+
+    const variacao = consumoAnterior === null ||
+        consumoAnterior === 0
+        ? null
+        : (diferenca / consumoAnterior) * 100;
+
+    const arredondar = valor =>
+        valor === null ? null : Number(valor.toFixed(2));
+
     return {
-        periodo: dashboardData.periodo,
+        periodo: historicoDisponivel
+            ? 'Últimos 30 dias'
+            : 'Consumo cadastrado (sem histórico)',
+
+        historicoDisponivel,
+        comparacaoDisponivel:
+            historicoDisponivel && anteriorDisponivel,
 
         consumo: {
-            atualKwh: Number(consumoAtual.toFixed(2)),
-            anteriorKwh: Number(consumoAnterior.toFixed(2)),
-            diferencaKwh: Number(diferencaConsumo.toFixed(2)),
-            variacaoPercentual: Number(variacaoPercentual.toFixed(2))
+            atualKwh: arredondar(consumoAtual),
+            anteriorKwh: arredondar(consumoAnterior),
+            diferencaKwh: arredondar(diferenca),
+            variacaoPercentual: arredondar(variacao)
         },
 
         gasto: {
-            atualReais: Number(gastoAtual.toFixed(2)),
-            anteriorReais: Number(gastoAnterior.toFixed(2))
+            atualReais: arredondar(consumoAtual * tarifa),
+            anteriorReais: consumoAnterior === null
+                ? null
+                : arredondar(consumoAnterior * tarifa)
         }
     };
 }
 
 module.exports = {
-    obterResumoConsumo
+    obterResumoConsumo,
+    obterTarifa
 };

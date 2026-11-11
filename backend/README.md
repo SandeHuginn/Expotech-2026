@@ -954,3 +954,97 @@ Status da integração:
 ||Implementação do histórico real de consumo.
 
 ||Implementação das demais funcionalidades planejadas.
+
+
+### Versão 0.5.0 — Integração completa com MySQL, histórico de consumo e validação do backend
+
+Nesta atualização, foram ampliadas e consolidadas as funcionalidades implementadas na versão 0.4.0, com foco na integração do backend ao banco de dados MySQL, no processamento do histórico de consumo, na análise de anomalias por Machine Learning e nas consultas realizadas pelo chatbot.
+
+Também foram implementadas melhorias na validação das requisições, no tratamento de erros e na organização das conexões com o banco de dados.
+
+**Alterações realizadas:**
+
+#### 1. Banco de dados MySQL
+- [x] Integração do backend com o banco `smarthome`.
+- [x] Configuração do pool de conexões utilizando `mysql2/promise`.
+- [x] Utilização das variáveis de ambiente por meio do Dotenv.
+- [x] Integração da tabela `aparelhos`.
+- [x] Integração da tabela `leituras_consumo` para armazenar e consultar o histórico de consumo.
+- [x] Integração da tabela `configuracoes_energia` para consultar a tarifa de energia.
+- [x] Implementação de consultas SQL para obtenção dos dados.
+- [x] Validação da conexão entre Node.js e MySQL.
+
+#### 2. Dashboard e consumo energético
+- [x] Atualização do endpoint `GET /api/dashboard/consumo`.
+- [x] Consulta do histórico de consumo armazenado no MySQL.
+- [x] Comparação entre o consumo atual e o período anterior.
+- [x] Cálculo da diferença de consumo em kWh.
+- [x] Cálculo da variação percentual entre períodos.
+- [x] Cálculo dos gastos estimados utilizando a tarifa cadastrada no banco.
+- [x] Manutenção do ranking dos três aparelhos de maior consumo.
+- [x] Testes das consultas utilizando PowerShell.
+
+#### 3. Gerenciamento de aparelhos — CRUD
+- [x] Implementação do cadastro de aparelhos (`POST`).
+- [x] Implementação da consulta de aparelhos (`GET`).
+- [x] Implementação da atualização de aparelhos (`PUT`).
+- [x] Implementação da exclusão de aparelhos (`DELETE`).
+- [x] Validação dos identificadores recebidos nas requisições.
+- [x] Validação dos campos `nome`, `comodo` e `consumoKwh`.
+- [x] Tratamento de dados inválidos com HTTP 400.
+- [x] Tratamento de aparelhos inexistentes com HTTP 404.
+- [x] Testes completos de cadastro, consulta, atualização e exclusão.
+
+#### 4. Monitoramento por cômodos
+- [x] Implementação do endpoint `GET /api/comodos`.
+- [x] Implementação do endpoint `GET /api/comodos/:nome`.
+- [x] Consulta dos aparelhos pertencentes a cada cômodo.
+- [x] Cálculo do consumo total por cômodo.
+- [x] Cálculo do gasto estimado por cômodo.
+- [x] Integração das consultas com o MySQL.
+- [x] Validação dos resultados utilizando PowerShell.
+
+#### 5. Machine Learning
+- [x] Integração da API Node.js com a API Python desenvolvida em Flask.
+- [x] Utilização do algoritmo Isolation Forest para identificação de possíveis anomalias.
+- [x] Atualização do endpoint `POST /api/machine-learning/analisar-consumo`.
+- [x] Implementação da consulta de histórico de consumo por ID do aparelho.
+- [x] Envio dos registros históricos do MySQL para análise.
+- [x] Retorno das possíveis anomalias identificadas em formato JSON.
+- [x] Validação da integração utilizando PowerShell.
+
+#### 6. Chatbot
+- [x] Implementação do endpoint `POST /api/chatbot/webhook`.
+- [x] Processamento da intenção `ConsultarConsumoGeral`.
+- [x] Processamento da intenção `ConsultarConsumoComodo`.
+- [x] Integração das consultas do chatbot com os dados armazenados no MySQL.
+- [x] Retorno das respostas por meio da propriedade `fulfillmentText`.
+- [x] Testes locais das intenções utilizando requisições simuladas do Dialogflow ES.
+
+#### 7. Tratamento de erros e validações
+- [x] Implementação de tratamento de exceções nos controllers.
+- [x] Retorno HTTP 400 para requisições inválidas.
+- [x] Retorno HTTP 404 para registros inexistentes.
+- [x] Implementação do tratamento de rotas não encontradas.
+- [x] Implementação de middleware para erros internos.
+- [x] Testes de validação dos dados enviados à API.
+- [x] Verificação básica do comportamento do pool de conexões.
+
+#### 8. Testes e documentação
+- [x] Testes dos principais endpoints utilizando PowerShell.
+- [x] Testes das operações CRUD com persistência no MySQL.
+- [x] Testes de integração entre Node.js, MySQL e Python.
+- [x] Testes locais das funcionalidades do chatbot.
+- [x] Execução de cinco requisições simultâneas, todas com HTTP 200.
+- [x] Atualização da documentação dos endpoints.
+- [x] Documentação das tabelas e consultas SQL.
+- [x] Documentação dos comandos de teste utilizados no PowerShell.
+- [x] Organização das instruções de configuração do ambiente.w
+
+**Resultado da versão 0.5.0:**
+
+O backend encontra-se funcional no ambiente de desenvolvimento, com integração ao MySQL, gerenciamento de aparelhos, consultas de consumo, monitoramento por cômodos, análise de anomalias e processamento das intenções implementadas no chatbot.
+
+As principais funcionalidades foram verificadas por meio de requisições HTTP e testes locais. A integração completa com o frontend e a reprodução do ambiente em outras máquinas permanecem como etapas de validação.
+
+**Status:** Funcionalidades principais do backend implementadas e testadas localmente.

@@ -1,40 +1,64 @@
 
-const API_MACHINE_LEARNING = 'http://127.0.0.1:5000';
+const conexao = require('../config/database');
 
-// Envia os consumos de um aparelho para a API Python.
-async function analisarConsumo(aparelho, consumos) {
-    try {
-        // Envia os dados para o serviço Python.
-        const resposta = await fetch(
-            `${API_MACHINE_LEARNING}/api/analisar-consumo`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    aparelho,
-                    consumos
-                })
-            }
-        );
+const API_MACHINE_LEARNING =
+    process.env.ML_API_URL || 'http://127.0.0.1:5000';
 
-        // Verifica se a API Python respondeu corretamente.
-        if (!resposta.ok) {
-            throw new Error(`Erro na API de Machine Learning: ${resposta.status}`);
-        }
+// Busca os consumos históricos de um aparelho.
+async function buscarHistorico(aparelhoId) {
+    const [aparelhos] = await conexao.execute(
+        'SELECT id, nome FROM aparelhos WHERE id = ?',
+        [aparelhoId]
+    );
 
-        // Converte a resposta JSON em objeto JavaScript.
-        const resultado = await resposta.json();
-
-        return resultado;
-
-    } catch (erro) {
-        console.error('Erro ao analisar consumo:', erro.message);
-        throw erro;
+    if (aparelhos.length === 0) {
+        return null;
     }
+
+    const [leituras] = await conexao.execute(`
+        SELECT data_leitura, consumo_kwh
+        FROM leituras_consumo
+        WHERE aparelho_id = ?
+        ORDER BY data_leitura ASC
+    `, [aparelhoId]);
+
+    return {
+        aparelho: aparelhos[0].nome,
+        consumos: leituras.map(
+            leitura => Number(leitura.consumo_kwh)
+        )
+    };
+}
+
+// Envia os dados para a API Python.
+async function analisarConsumo(aparelho, consumos) {
+    const resposta = await fetch(
+        `${API_MACHINE_LEARNING}/api/analisar-consumo`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                aparelho,
+                consumos
+            }),
+            signal: AbortSignal.timeout(15000)
+        }
+    );
+
+    const resultado = await resposta.json();
+
+    if (!resposta.ok) {
+        throw new Error(
+            resultado.erro || 'Erro na API de Machine Learning.'
+        );
+    }
+
+    return resultado;
 }
 
 module.exports = {
-    analisarConsumo
+    analisarConsumo,
+    buscarHistorico
 };

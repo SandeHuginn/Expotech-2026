@@ -1,28 +1,71 @@
 
-const { analisarConsumo } = require('../services/machineLearningService');
+const machineLearningService =
+    require('../services/machineLearningService');
 
-// Recebe a solicitação de análise de consumo.
 async function analisar(req, res) {
     try {
-        const { aparelho, consumos } = req.body;
+        const {
+            aparelhoId,
+            aparelho,
+            consumos
+        } = req.body || {};
 
-        // Verifica se os dados obrigatórios foram enviados.
-        if (!aparelho || !Array.isArray(consumos) || consumos.length === 0) {
+        let nomeAparelho = aparelho;
+        let listaConsumos = consumos;
+
+        // Se informar ID, consulta o histórico no MySQL.
+        if (aparelhoId !== undefined) {
+            const id = Number(aparelhoId);
+
+            if (!Number.isSafeInteger(id) || id <= 0) {
+                return res.status(400).json({
+                    erro: 'ID do aparelho inválido.'
+                });
+            }
+
+            const historico =
+                await machineLearningService.buscarHistorico(id);
+
+            if (!historico) {
+                return res.status(404).json({
+                    erro: 'Aparelho não encontrado.'
+                });
+            }
+
+            nomeAparelho = historico.aparelho;
+            listaConsumos = historico.consumos;
+        }
+
+        // Validação dos dados recebidos.
+        if (
+            typeof nomeAparelho !== 'string' ||
+            !nomeAparelho.trim() ||
+            !Array.isArray(listaConsumos) ||
+            listaConsumos.length < 5 ||
+            listaConsumos.some(valor =>
+                typeof valor !== 'number' ||
+                !Number.isFinite(valor) ||
+                valor < 0
+            )
+        ) {
             return res.status(400).json({
-                erro: 'Informe o aparelho e uma lista de consumos.'
+                erro: 'Informe um aparelho e pelo menos 5 consumos numéricos válidos.'
             });
         }
 
-        // Solicita a análise ao serviço de Machine Learning.
-        const resultado = await analisarConsumo(aparelho, consumos);
+        const resultado =
+            await machineLearningService.analisarConsumo(
+                nomeAparelho,
+                listaConsumos
+            );
 
         return res.status(200).json(resultado);
 
     } catch (erro) {
-        console.error('Erro no controller de Machine Learning:', erro.message);
+        console.error('Erro no Machine Learning:', erro);
 
-        return res.status(500).json({
-            erro: 'Não foi possível realizar a análise de consumo.'
+        return res.status(502).json({
+            erro: 'Falha ao consultar o banco ou a API Python.'
         });
     }
 }
