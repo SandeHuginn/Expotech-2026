@@ -270,8 +270,7 @@ Recebe o nome de um aparelho e uma lista de registros de consumo em kWh. Os dado
 
 ```json
 {
-  "aparelho": "Geladeira",
-  "consumos": [2.1, 2.3, 2.0, 2.2, 2.4, 2.1, 8.5]
+  "aparelhoId": 1
 }
 ```
 
@@ -343,7 +342,7 @@ Exemplo:
 
 **Dependências e situação dos testes:**
 
-A consulta dos dados depende da conexão com o banco de dados MySQL. A comunicação entre Dialogflow, Cloudflare Tunnel e webhook do backend foi testada com sucesso, mas a validação das respostas utilizando dados reais permanece pendente enquanto o banco de dados não estiver disponível.
+A consulta dos dados depende da conexão com o banco de dados MySQL. A comunicação entre Dialogflow ES, Cloudflare Tunnel e webhook do backend foi testada com sucesso. As consultas de consumo geral e por cômodo também foram verificadas utilizando dados do MySQL.
 
 
 ## 6. Como executar o projeto
@@ -482,7 +481,7 @@ Utilize o recurso **Try it now** do Dialogflow para enviar perguntas como:
 
 ## 7. Integração com o frontend
 
-O frontend utiliza HTML, CSS e JavaScript e está localizado no diretório `teste_dashboard copy/`.
+O frontend utiliza HTML, CSS e JavaScript e está localizado no diretório `frontend/`.
 
 A comunicação com o backend é realizada por meio de requisições HTTP utilizando `fetch()`, com troca de informações no formato JSON.
 
@@ -494,42 +493,60 @@ O frontend realiza uma requisição para:
 GET http://localhost:3000/api/dashboard/consumo
 ```
 
-Exemplo de implementação:
+Os dados recebidos são utilizados para atualizar os indicadores da dashboard:
 
-```javascript
-const API_URL = 'http://localhost:3000/api/dashboard/consumo';
-
-async function carregarResumoConsumo() {
-    const resposta = await fetch(API_URL);
-
-    if (!resposta.ok) {
-        throw new Error(`Erro HTTP: ${resposta.status}`);
-    }
-
-    const dados = await resposta.json();
-
-    console.log(dados);
-}
-```
-
-### Indicadores e gráfico
-
-Os dados recebidos pela API são utilizados para atualizar os elementos da dashboard:
-
-- **Gráfico de consumo:** apresenta a comparação entre o consumo atual e o consumo do período anterior.
+- **Gráfico de consumo:** compara o consumo atual com o período anterior.
 - **Consumo atual:** apresenta o consumo em kWh.
 - **Gasto estimado:** apresenta o valor estimado em reais.
 - **Variação do consumo:** apresenta a diferença percentual entre os períodos.
 
-A atualização dos indicadores e do gráfico ocorre durante o carregamento da dashboard e também por meio do botão de atualização manual.
+### Ranking de aparelhos
+
+O frontend consulta o endpoint:
+
+```text
+GET http://localhost:3000/api/dashboard/aparelhos
+```
+
+Os três aparelhos com maior consumo são apresentados dinamicamente na dashboard, de acordo com os dados retornados pela API.
+
+### Monitoramento por cômodos
+
+A seleção de um cômodo realiza uma requisição para:
+
+```text
+GET http://localhost:3000/api/comodos/:nome
+```
+
+O nome do cômodo é codificado utilizando `encodeURIComponent()` para permitir consultas com espaços e caracteres especiais.
+
+Os dados recebidos são utilizados para atualizar:
+
+- **Consumo total:** apresenta o consumo do cômodo em kWh.
+- **Gasto estimado:** apresenta o custo calculado para o ambiente.
+- **Gráfico individual:** apresenta o consumo dos aparelhos do cômodo.
+- **Escala visual:** representa proporcionalmente o consumo de cada aparelho em relação ao aparelho de maior consumo daquele ambiente.
+- **Lista de equipamentos:** exibe dinamicamente os aparelhos cadastrados no cômodo.
+
+Quando o cômodo não possui cadastro, o frontend apresenta uma mensagem informativa e limpa os dados da seleção anterior.
+
+### Situação da integração
+
+- [x] Integração dos indicadores gerais de consumo.
+- [x] Integração do gráfico de comparação entre períodos.
+- [x] Integração do ranking dos três aparelhos de maior consumo.
+- [x] Integração da consulta de cômodos.
+- [x] Atualização dinâmica do gráfico individual.
+- [x] Exibição dinâmica dos equipamentos de cada cômodo.
+- [x] Tratamento de cômodos não cadastrados.
 
 ### Execução da integração
 
 Para testar a comunicação entre frontend e backend:
 
 1. Inicie o backend com `npm run dev`.
-2. Abra o arquivo `index.html` localizado em `teste_dashboard copy/`.
-3. A dashboard realizará a requisição à API e atualizará os indicadores com os dados recebidos.
+2. Abra o arquivo `index.html` localizado em `frontend/`.
+3. A dashboard realizará as requisições à API e atualizará os elementos com os dados recebidos.
 
 ## 8. Banco de dados
 
@@ -567,7 +584,11 @@ A estrutura definitiva será alinhada com o integrante responsável pelo banco d
 - [x] Criação do agente e configuração das intenções no Dialogflow ES.
 - [x] Implementação do webhook do chatbot no backend.
 - [x] Integração do Dialogflow ES com o backend utilizando Cloudflare Tunnel.
-- [ ] Validação das consultas do chatbot utilizando dados reais do MySQL.
+- [x] Validação das consultas individuais e dos cômodos com o MySQL.
+- [x] Integração da consulta de cômodos com o frontend.
+- [x] Implementação do gráfico individual de consumo por cômodo.
+- [x] Exibição dinâmica dos aparelhos de cada cômodo.
+- [x] Tratamento de cômodos sem cadastro no frontend.
 - [ ] Integração com a estrutura definitiva de dados.
 
 ## 10. Histórico de alterações
@@ -1048,3 +1069,42 @@ O backend encontra-se funcional no ambiente de desenvolvimento, com integração
 As principais funcionalidades foram verificadas por meio de requisições HTTP e testes locais. A integração completa com o frontend e a reprodução do ambiente em outras máquinas permanecem como etapas de validação.
 
 **Status:** Funcionalidades principais do backend implementadas e testadas localmente.
+
+### Versão 0.6.0 — Integração do frontend com o backend e monitoramento por cômodos
+
+Nesta atualização, foi ampliada a integração entre o frontend e o backend, com foco na apresentação dinâmica dos dados de consumo energético e no monitoramento individual dos cômodos da residência.
+
+Também foram realizados ajustes na documentação das funcionalidades de Machine Learning e chatbot, considerando as implementações mais recentes.
+
+**Alterações realizadas:**
+
+#### 1. Organização do frontend
+- [x] Organização dos arquivos HTML, CSS e JavaScript no diretório `frontend/`.
+- [x] Integração da página principal com os endpoints do backend.
+
+#### 2. Dashboard geral
+- [x] Integração dos indicadores de consumo e gastos.
+- [x] Atualização dinâmica do gráfico de comparação entre períodos.
+- [x] Integração do ranking dos três aparelhos de maior consumo.
+
+#### 3. Monitoramento por cômodos
+- [x] Integração da seleção de cômodos com o endpoint `GET /api/comodos/:nome`.
+- [x] Atualização dinâmica do consumo total e do gasto estimado.
+- [x] Implementação do gráfico individual de consumo dos aparelhos.
+- [x] Implementação de escala visual proporcional ao aparelho de maior consumo do cômodo.
+- [x] Exibição dinâmica dos equipamentos cadastrados.
+- [x] Tratamento de respostas HTTP 404 para cômodos não cadastrados.
+- [x] Validação da integração com os cinco cômodos existentes no banco de dados.
+
+#### 4. Machine Learning e chatbot
+- [x] Integração da análise de anomalias com o histórico de consumo armazenado no MySQL.
+- [x] Atualização do formato de requisição do endpoint de análise para utilização do identificador do aparelho.
+- [x] Validação das consultas de consumo geral e por cômodo realizadas pelo chatbot.
+
+**Resultado da versão 0.6.0:**
+
+A dashboard principal já apresenta informações reais fornecidas pelo backend, incluindo indicadores gerais, ranking de aparelhos e monitoramento individual dos cômodos. O frontend possui tratamento para ambientes sem cadastro.
+
+A integração das funcionalidades de cadastro, edição e exclusão de aparelhos com os formulários do frontend, assim como a integração visual do Machine Learning e do chatbot, permanece como etapa de desenvolvimento.
+
+**Status:** Integração da dashboard principal e do monitoramento por cômodos concluída.

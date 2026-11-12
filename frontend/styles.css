@@ -1,0 +1,705 @@
+/* Importação da fonte moderna 'Inter' do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* --- VARIÁVEIS DE DESIGN SYSTEM --- */
+:root {
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #1e293b 100%);
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --card-bg-hover: rgba(51, 65, 85, 0.8);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --header-bg: rgba(15, 23, 42, 0.85);
+    
+    --accent-blue: #3b82f6;
+    --accent-blue-hover: #2563eb;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+    --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.25);
+    
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- RESET & BASE --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body.estilo-background {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 24px;
+    line-height: 1.5;
+}
+
+/* --- CABEÇALHO PRINCIPAL --- */
+.cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.botao_IA {
+    width: 65px;
+    height: 65px;
+    background-color: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    border-radius: var(--radius-md);
+    background-image: url("images-removebg-preview (2).png");
+    background-size: 45px;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+}
+
+.botao_IA:hover {
+    transform: translateY(-2px) scale(1.03);
+    border-color: var(--accent-blue);
+    box-shadow: var(--shadow-glow);
+    background-color: rgba(59, 130, 246, 0.25);
+}
+
+.titulo_principal {
+    width: 100%;
+    min-height: 65px;
+    background: var(--header-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    box-shadow: var(--shadow-md);
+}
+
+.titulo_principal h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+/* --- LAYOUT EM COLUNAS --- */
+.ajuste_lateral_conteudo {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+}
+
+.bloco_coluna {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    align-items: center;
+}
+
+.estilo_sub {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    width: 100%;
+    background: var(--header-bg);
+    border: 1px solid var(--card-border);
+    color: var(--accent-blue);
+    text-align: center;
+    margin-bottom: 16px;
+    padding: 10px 16px;
+    box-shadow: var(--shadow-sm);
+}
+
+/* --- QUADROS & CARTÕES (GLASSMORPHISM) --- */
+.estilo_quadro, .estilo_quadro_2 {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 24px;
+    transition: var(--transition);
+}
+
+.estilo_quadro {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.estilo_quadro_2 {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: flex-start;
+    overflow-y: auto;
+}
+
+.conteudo_superior_quadro {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    gap: 20px;
+}
+
+/* Gráfico circular com sombra suave */
+.grafico_pizza {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    background: conic-gradient(
+        #3b82f6 0% 40%,
+        #06b6d4 40% 75%,
+        #a855f7 75% 100%
+    );
+    transition: var(--transition);
+}
+
+.grafico_pizza:hover {
+    transform: scale(1.02);
+}
+
+/* --- LEGENDA --- */
+.legenda {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.legenda h3 {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.item_legenda {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Estrutura visual das cores da legenda */
+.cor_atual,
+.cor_anterior {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+/* Cores da comparação de consumo */
+.cor_atual {
+    background-color: #3b82f6;
+}
+
+.cor_anterior {
+    background-color: #06b6d4;
+}
+
+.texto_legenda {
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* --- INDICADORES DE CONSUMO --- */
+.indicadores-consumo {
+    display: flex;
+    width: 100%;
+    gap: 12px;
+}
+
+.indicador {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 14px 10px;
+    flex: 1;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.indicador:hover {
+    background: rgba(15, 23, 42, 0.85);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.indicador-titulo {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.indicador strong {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* --- RANKING DE APARELHOS --- */
+.div_critico {
+    width: 100%;
+    min-height: 60px;
+    border-radius: var(--radius-md);
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    transition: var(--transition);
+}
+
+.div_critico:hover {
+    background: var(--card-bg-hover);
+    transform: translateX(4px);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.div_critico strong {
+    color: var(--accent-blue);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.div_critico span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* --- SEÇÃO PARTES DA CASA --- */
+.estilo_titulo_2 {
+    background: var(--header-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    width: 100%;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 32px;
+    box-shadow: var(--shadow-sm);
+}
+
+.estilo_titulo_2 h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.div_partes_da_casa_barra {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.div_partes_da_casa_filhos {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--card-border);
+    flex: 1;
+    height: 50px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    transition: var(--transition);
+    position: relative;
+}
+
+.div_partes_da_casa_filhos:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.div_partes_da_casa_filhos_2 {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    padding: 0;
+}
+
+/* --- DROPDOWN / MINI MENU --- */
+.estilo_mini_menu {
+    position: relative;
+}
+
+.botao_mini_menu {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.botao_mini_menu:hover {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0;
+    width: 220px;
+    background: #0f172a;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 6px;
+    z-index: 999;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dropdown-menu.show {
+    display: flex;
+}
+
+.dropdown-item {
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.dropdown-item:hover {
+    background: rgba(59, 130, 246, 0.2);
+}
+
+.dropdown-item.selected {
+    background: rgba(59, 130, 246, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.5);
+}
+
+/* --- QUADRO GRÁFICO INDIVIDUAL E EQUIPAMENTOS --- */
+.quadro_grafico_individual {
+    width: 100%;
+    height: 360px;
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin-top: 20px;
+    display: flex;
+    gap: 16px;
+    box-shadow: var(--shadow-md);
+}
+
+.sub_div_1, .sub_div_2 {
+    flex: 1;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.grafico_individual_titulo {
+    width: 100%;
+    height: 40px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.grafico_individual_titulo h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.conteudo_equipamentos {
+    display: flex;
+    gap: 14px;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+}
+
+.botao_adicionar_equipamento {
+    width: 70px;
+    height: 100%;
+    max-height: 220px;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px stroke rgba(59, 130, 246, 0.4);
+    color: var(--accent-blue);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.botao_adicionar_equipamento:hover {
+    background: var(--accent-blue);
+    color: white;
+    box-shadow: var(--shadow-glow);
+}
+
+.coluna_direita_equipamentos {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+}
+
+.cabecalho_tabela_equipamentos {
+    display: flex;
+    justify-content: space-around;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.lista_cards_equipamentos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+.equipamentos_comodos_card {
+    width: 100%;
+    height: 45px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Mantém o texto à esquerda e o botão à direita */
+    padding: 0 12px;
+}
+
+.botao_remover_equipamento {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-sm);
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.botao_remover_equipamento:hover {
+    background: #ef4444;
+    color: white;
+}
+
+/* --- BOTÕES DE RETORNO E AÇÕES --- */
+.botao_retorno {
+    height: 42px;
+    padding: 0 18px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.botao_retorno:hover {
+    background: var(--card-bg-hover);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(-3px);
+}
+
+/* --- CHATBOT & FORMULÁRIOS --- */
+.chatbot_conteiner, .forms_conteiner {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.chatbot-lado, .forms-lado {
+    flex: 1;
+    min-height: 600px;
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: var(--shadow-md);
+}
+
+.chat-titulo, .titulo_formulario, .estilo_titulo_forms, .estilo_titulo_forms_2 {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    text-align: center;
+}
+
+.chat-input-container {
+    display: flex;
+    gap: 12px;
+    padding: 8px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+}
+
+.chat-input-field, .estilo_campo_texto, .estilo_campo_texto_descricao {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+.chat-input-field:focus, .estilo_campo_texto:focus, .estilo_campo_texto_descricao:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.chat-send-button, .estilo_titulo_forms_2 {
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.chat-send-button:hover, .estilo_titulo_forms_2:hover {
+    background: var(--accent-blue-hover);
+    box-shadow: var(--shadow-glow);
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 900px) {
+    .ajuste_lateral_conteudo, .chatbot_conteiner, .forms_conteiner {
+        flex-direction: column;
+    }
+    .bloco_coluna {
+        width: 100%;
+    }
+}
+
+
+/* Gráfico individual de consumo dos aparelhos */
+
+.grafico-barras {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    margin-top: 25px;
+}
+
+.item-grafico {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    width: 100%;
+}
+
+.nome-grafico {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.barra-fundo {
+    width: 100%;
+    height: 14px;
+    background: rgba(148, 163, 184, 0.2);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.barra-consumo {
+    height: 100%;
+    background: linear-gradient(90deg, #36a2eb, #6366f1);
+    border-radius: 20px;
+    transition: width 0.5s ease;
+}
+
+.valor-grafico {
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    text-align: right;
+}

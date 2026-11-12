@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartHome Monitor</title>
+    <link rel = "stylesheet" href = "styles.css">
+    <script src = "script.js" defer></script>
+</head>
+
+<body class = "estilo-background">
+    <header class = "cabecalho">
+        <div class = "botao_IA" onclick = "window.location.href = 'chatbot.html'">
+            <!-- Imagem remetendo a uma IA / chatbot -->
+
+        </div>
+        <div class = "titulo_principal">
+            <h1>
+                SmartHome Monitor - Sistema Inteligente de Consumo e Manutenção
+            </h1>
+            
+        </div>
+    </header>
+
+    <div class = "ajuste_lateral_conteudo">
+        <div class = "bloco_coluna">
+            <div class = "estilo_sub">
+                Balanço de energia geral
+            </div>
+    <div class="estilo_quadro">
+        <div class = "conteudo_superior_quadro">
+            
+        <div class="legenda">
+            <h3>Comparação de consumo:</h3>
+
+        <div class="item_legenda">
+            <span class="cor_atual"></span>
+            <span class="texto_legenda">Período atual</span>
+            <strong id="valorConsumoAtual">-- kWh</strong>
+            <span id="percentualConsumoAtual">--%</span>
+        </div>
+
+        <div class="item_legenda">
+            <span class="cor_anterior"></span>
+            <span class="texto_legenda">Período anterior</span>
+            <strong id="valorConsumoAnterior">-- kWh</strong>
+            <span id="percentualConsumoAnterior">--%</span>
+        </div>
+    </div>
+    
+        <div class="grafico_pizza" id="graficoPizza"></div>
+        </div>
+        
+
+        <!-- Gráfico de comparação do consumo -->
+        
+
+        <!-- Indicadores recebidos do backend -->
+         <div class="indicadores-consumo">
+
+            <div class="indicador">
+                <span class="indicador-titulo">Consumo atual</span>
+                <strong id="consumoAtual">-- kWh</strong>
+            </div>
+
+            <div class="indicador">
+                <span class="indicador-titulo">Gasto estimado</span>
+                <strong id="gastoAtual">R$ --</strong>
+            </div>
+
+            <div class="indicador">
+                <span class="indicador-titulo">Variação do consumo</span>
+                <strong id="variacaoConsumo">--%</strong>
+            </div>
+
+        </div>
+    </div>
+</div>
+        
+        <div class = "bloco_coluna">
+            <div class = "estilo_sub">
+                Aparelhos com maior consumo
+            </div>
+            <div class="estilo_quadro_2" id="rankingAparelhos"></div>
+        </div>
+        
+    </div>
+    
+    
+    <div class="estilo_titulo_2">
+        <h2>Partes da casa separadas</h2>
+    </div>
+
+    <div class="div_partes_da_casa_barra">
+    <!-- Parte da Casa 1 -->
+    <div class="div_partes_da_casa_filhos">
+        <!-- Texto fixo ao lado -->
+        <span class="texto-parte">Quartos</span>
+
+        <!-- Botão com o Mini Menu / Dropdown -->
+        <div class="estilo_mini_menu">
+            <button class="botao_mini_menu" onclick="toggleMenu(event, 'menuQuarto')">
+                <span class="material-symbols-outlined"></span>
+            </button>
+
+            <!-- Caixa de Opções Flutuante -->
+            <div class="dropdown-menu" id="menuQuarto">
+                <div class="dropdown-item selected" onclick="selecionarComodo('Quarto 1')">
+                    <div class="icon-area">
+                        <!-- <span class="material-symbols-outlined">check</span> -->
+                    </div>
+                    <div class="text-area">
+                        <span class="title">Quarto 1</span>
+                        <span class="description"></span>
+                    </div>
+                </div>
+                <div class="dropdown-item" onclick="selecionarComodo('Quarto 2')">
+                    <div class="icon-area">
+                        <!-- <span class="material-symbols-outlined">lock</span> -->
+                    </div>
+                    <div class="text-area">
+                        <span class="title">Quarto 2</span>
+                        <span class="description"></span>
+                    </div>
+                    
+                </div>
+                
+                <div class="dropdown-item" onclick="selecionarComodo('Quarto 3')">
+                    <div class="icon-area">
+                        <!-- <span class="material-symbols-outlined">lock</span> -->
+                    </div>
+                    <div class="text-area">
+                        <span class="title">Quarto 3</span>
+                        <span class="description"></span>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Outros blocos vazios (pode replicar a estrutura depois se quiser) -->
+    <div class="div_partes_da_casa_filhos">
+    <span class="texto-parte">
+        <button class="div_partes_da_casa_filhos_2"
+            onclick="selecionarComodo('Sala')">
+            Sala
+        </button>
+    </span>
+</div>
+
+<div class="div_partes_da_casa_filhos">
+    <span class="texto-parte">
+        <button class="div_partes_da_casa_filhos_2"
+            onclick="selecionarComodo('Cozinha')">
+            Cozinha
+        </button>
+    </span>
+</div>
+
+<div class="div_partes_da_casa_filhos">
+    <span class="texto-parte">
+        <button class="div_partes_da_casa_filhos_2"
+            onclick="selecionarComodo('Banheiro')">
+            Banheiro
+        </button>
+    </span>
+</div>
+
+<div class="div_partes_da_casa_filhos">
+    <span class="texto-parte">
+        <button class="div_partes_da_casa_filhos_2"
+            onclick="selecionarComodo('Área de serviços')">
+            Área de Serviços
+        </button>
+    </span>
+</div>
+
+    </div>
+    <div class = "quadro_grafico_individual">
+        <div class="sub_div_1" id="areaGraficoIndividual">
+            <div class = "grafico_individual_titulo">
+                <h3>
+                    Gráfico Individual
+                </h3>
+            </div>
+
+            
+
+        </div>
+        <div class = "sub_div_2">
+            <div class = "grafico_individual_titulo">
+                <h3>
+                    Equipamentos
+                </h3>
+            </div>
+            
+            <div class = "conteudo_equipamentos">
+                <button class = "botao_adicionar_equipamento" onclick = "window.location.href = 'formulario.html'">
+                    <h2> + </h2>
+                </button>
+
+                <div class = "coluna_direita_equipamentos">
+                    <div class = "cabecalho_tabela_equipamentos">
+                        <span>CONSUMO</span>
+                        <span>STATUS</span>
+                        
+                    </div>
+
+                    <div class="lista_cards_equipamentos" id="listaEquipamentos">
+                </div>
+        </div>
+
+    </div>
+    <!-- <button onclick = "mudarDados()">Atualizar Dados</button> -->
+</body>
+</html>
