@@ -1,85 +1,226 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de adicionar equipamento</title>
-    <link rel = "stylesheet" href = "styles.css">
-    <script src = "script.js" defer></script>
-    <script >
 
-    </script>
+    <title>Formulário de adicionar equipamento</title>
+
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class = "estilo-background">
-    <button class = "botao_retorno" onclick= "window.location.href = 'index.html'">
-        <span class = "seta">
-            &#8592;
-        </span>
-        <span class = "texto_voltar">
-            Voltar
-        </span>
+
+<body class="estilo-background">
+
+    <button
+        type="button"
+        class="botao_retorno"
+        onclick="window.location.href = 'index.html'">
+
+        <span class="seta">&#8592;</span>
+        <span class="texto_voltar">Voltar</span>
     </button>
-    
-    <div class = "titulo_formulario">
+
+    <div class="titulo_formulario">
         <h1>Novo equipamento</h1>
     </div>
-    <div class = "forms_conteiner">
-        
 
-        <div class = "forms-lado lado-esquerdo-forms">
-            <h2 class = "estilo_titulo_forms">
-                Nome do equipamento
-            </h2>
-            <input type = "text" placeholder="Nome equipamento" class = "estilo_campo_texto">                
+    <form id="formularioAparelho" class="forms_conteiner">
 
-            
-           <div class="conteiner-selecao">
-                <div class="estilo_titulo_forms">
+        <div class="forms-lado lado-esquerdo-forms">
+
+            <label for="nomeAparelho" class="estilo_titulo_forms">
+                <h2>Nome do equipamento</h2>
+            </label>
+
+            <input
+                id="nomeAparelho"
+                name="nome"
+                type="text"
+                maxlength="100"
+                required
+                placeholder="Nome equipamento"
+                class="estilo_campo_texto">
+
+            <div class="conteiner-selecao">
+
+                <label for="comodos" class="estilo_titulo_forms">
                     <h2>Escolha um cômodo:</h2>
-                </div>
-            <select id="comodos" class="estilo_campo_texto">
-            <option value="" disabled selected>
-                Selecione um cômodo...
-            </option>
-            <option value="quartos">Quartos</option>
-            <option value="sala">Sala</option>
-            <option value="cozinha">Cozinha</option>
-            <option value="banheiro">Banheiro</option>
-            <option value="area_servico">Área de Serviços</option>
-        </select>
-</div>
-            
-        </div>
+                </label>
 
-        <div class = "forms-lado lado-direito-forms">
-            <div class = "estilo_titulo_forms">
-                <h2>
-                    Descrição do equipamento
-                </h2>
+                <select
+                    id="comodos"
+                    name="comodo"
+                    class="estilo_campo_texto"
+                    required>
+
+                    <option value="" disabled selected>
+                        Selecione um cômodo...
+                    </option>
+
+                    <option value="quartos">Quartos</option>
+                    <option value="sala">Sala</option>
+                    <option value="cozinha">Cozinha</option>
+                    <option value="banheiro">Banheiro</option>
+                    <option value="Área de serviço">Área de Serviços</option>
+
+                </select>
             </div>
-            <textarea placeholder="Nome equipamento" class = "estilo_campo_texto_descricao">
+        </div>
 
-            </textarea>
+        <div class="forms-lado lado-direito-forms">
 
-            
-                <h2 class = "estilo_titulo_forms">
-                    Expectativa de consumo
-                </h2>
-                <input type = "text" placeholder="Expectativa de Consumo" class = "estilo_campo_texto">
-            
-            <button class = "estilo_titulo_forms_2">
-                <h2>
-                    Salvar
-                </h2>
-            </button> 
-        
+            <label
+                for="consumoAparelho"
+                class="estilo_titulo_forms">
 
-       
+                <h2>Expectativa de consumo (kWh)</h2>
+            </label>
+
+            <input
+                id="consumoAparelho"
+                name="consumoKwh"
+                type="number"
+                min="0"
+                step="any"
+                required
+                placeholder="Ex.: 10,5"
+                class="estilo_campo_texto">
+
+            <button
+                id="botaoSalvar"
+                type="submit"
+                class="estilo_titulo_forms_2">
+
+                <h2>Salvar</h2>
+            </button>
+
+            <p
+                id="mensagemFormulario"
+                role="status"
+                aria-live="polite">
+            </p>
 
         </div>
-        
-    </div>
-    
-    
+    </form>
+
+    <!-- INTEGRAÇÃO COM O BACKEND -->
+
+    <script>
+
+        // Rota CREATE do backend
+        const URL_CADASTRO =
+            'http://localhost:3000/api/dashboard/aparelhos';
+
+        const formulario =
+            document.getElementById('formularioAparelho');
+
+        const mensagem =
+            document.getElementById('mensagemFormulario');
+
+        const botaoSalvar =
+            document.getElementById('botaoSalvar');
+
+        // Evento acionado ao clicar em Salvar
+        formulario.addEventListener('submit', async (evento) => {
+
+            // Impede o recarregamento da página
+            evento.preventDefault();
+
+            // Recupera os valores preenchidos
+            const nome = document
+                .getElementById('nomeAparelho')
+                .value.trim();
+
+            const comodo = document
+                .getElementById('comodos')
+                .value;
+
+            const valorConsumo = document
+                .getElementById('consumoAparelho')
+                .value;
+
+            const consumoKwh = Number(valorConsumo);
+
+            // Validação dos dados
+            if (
+                !nome ||
+                !comodo ||
+                valorConsumo === '' ||
+                !Number.isFinite(consumoKwh) ||
+                consumoKwh < 0
+            ) {
+                mensagem.textContent =
+                    'Preencha nome, cômodo e consumo válido.';
+
+                return;
+            }
+
+            // Desabilita o botão durante o cadastro
+            botaoSalvar.disabled = true;
+
+            mensagem.textContent = 'Salvando equipamento...';
+
+            try {
+
+                // Envia os dados para o backend
+                const resposta = await fetch(URL_CADASTRO, {
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+                        nome,
+                        comodo,
+                        consumoKwh
+                    })
+
+                });
+
+                // Recebe a resposta do backend
+                const dados = await resposta.json();
+
+                // Verifica se ocorreu algum erro
+                if (!resposta.ok) {
+                    throw new Error(
+                        dados.mensagem ||
+                        `Erro HTTP ${resposta.status}`
+                    );
+                }
+
+                // Cadastro realizado
+                mensagem.textContent =
+                    `Equipamento "${dados.aparelho.nome}" ` +
+                    `cadastrado com sucesso! ` +
+                    `ID: ${dados.aparelho.id}.`;
+
+                // Limpa os campos
+                formulario.reset();
+
+            } catch (erro) {
+
+                console.error(
+                    'Falha ao cadastrar equipamento:',
+                    erro
+                );
+
+                mensagem.textContent =
+                    `Não foi possível cadastrar: ${erro.message}`;
+
+            } finally {
+
+                // Reabilita o botão
+                botaoSalvar.disabled = false;
+
+            }
+
+        });
+
+    </script>
+
 </body>
 </html>

@@ -994,6 +994,8 @@ Também foram implementadas melhorias na validação das requisições, no trata
 - [x] Integração da tabela `configuracoes_energia` para consultar a tarifa de energia.
 - [x] Implementação de consultas SQL para obtenção dos dados.
 - [x] Validação da conexão entre Node.js e MySQL.
+- [x]Implementação da funcionalidade CREATE no formulário de cadastro de aparelhos.
+- [X]Integração do formulário com o backend para envio dos dados ao MySQL.
 
 #### 2. Dashboard e consumo energético
 - [x] Atualização do endpoint `GET /api/dashboard/consumo`.
