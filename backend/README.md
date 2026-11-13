@@ -90,7 +90,8 @@ backend/
 | GET | `/api/comodos` | Listar cômodos e seus aparelhos, consumo e gasto estimado |
 | GET | `/api/comodos/:nome` | Consultar um cômodo específico pelo nome |
 | POST | `/api/machine-learning/analisar-consumo` | Analisar o consumo de um aparelho e identificar possíveis anomalias |
-| POST | `/api/chatbot/webhook` | Recebe as mensagens enviadas pelo Dialogflow ES e processa as intenções do chatbot |
+| POST | `/api/chatbot/mensagem` | Receber mensagens enviadas pelo frontend e encaminhá-las ao Dialogflow ES |
+| POST | `/api/chatbot/webhook` | Receber as mensagens e intenções processadas pelo Dialogflow ES e consultar os dados no backend |
 
 ### GET `/api/dashboard/consumo`
 
@@ -305,40 +306,79 @@ Recebe o nome de um aparelho e uma lista de registros de consumo em kWh. Os dado
 
 ### Planejados
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| GET | `/api/chatbot` | Consultar informações disponíveis para o chatbot |
-
-Os endpoints planejados serão atualizados conforme forem implementados.
+Não há endpoints adicionais planejados para o chatbot no momento. As funcionalidades implementadas estão documentadas na seção seguinte.
 
 #### Chatbot — Integração com Dialogflow ES
 
-O chatbot utiliza o Dialogflow ES para interpretar as mensagens enviadas pelos usuários. Quando uma intenção é identificada, o Dialogflow encaminha os dados para o webhook do backend.
+O chatbot utiliza o Dialogflow ES para interpretar as mensagens enviadas pelos usuários, identificar a intenção de cada pergunta e consultar os dados disponibilizados pelo backend.
 
-**Endpoint:** `POST /api/chatbot/webhook`
+A comunicação ocorre por meio de dois endpoints:
+
+**1. POST `/api/chatbot/mensagem`**
+
+Recebe as mensagens enviadas pelo frontend e encaminha o conteúdo ao Dialogflow ES.
+
+Exemplo de requisição:
+
+```json
+{
+  "mensagem": "Qual é o consumo do banheiro?",
+  "sessionId": null
+}
+```
+
+O campo `sessionId` identifica a sessão da conversa. Após a primeira interação, o identificador retornado pelo backend é reutilizado para manter o contexto entre as mensagens.
+
+**2. POST `/api/chatbot/webhook`**
+
+Recebe as intenções identificadas pelo Dialogflow ES e executa a consulta correspondente no backend.
 
 **Intenções implementadas:**
 
 | Intenção | Descrição |
 |---|---|
-| `ConsultarConsumoGeral` | Consulta o consumo atual e o gasto estimado da residência. |
+| `ConsultarConsumoGeral` | Consulta o consumo atual e o gasto estimado de toda a residência. |
 | `ConsultarConsumoComodo` | Consulta a quantidade de aparelhos, o consumo total e o gasto estimado de um cômodo específico. |
+| `ConsultarGastoComodo` | Consulta o gasto estimado do último cômodo mencionado na conversa. |
 
-**Parâmetros:**
+**Parâmetros e contexto:**
 
-- `comodo`: nome do cômodo informado pelo usuário, utilizado na intenção `ConsultarConsumoComodo`.
+- `comodo`: identifica o cômodo mencionado pelo usuário, utilizado nas intenções de consulta por cômodo.
+- `contexto-comodo`: contexto de conversa utilizado pelo Dialogflow ES para armazenar o último cômodo identificado. Permite que o usuário faça perguntas complementares sem precisar repetir o nome do cômodo.
 
-**Formato da resposta:**
+**Exemplo de conversa:**
 
-O backend retorna um objeto JSON com a propriedade `fulfillmentText`, contendo a resposta em linguagem natural que será apresentada pelo Dialogflow.
+```text
+Usuário: Qual é o consumo do banheiro?
 
-Exemplo:
+Chatbot: O cômodo Banheiro possui 1 aparelho.
+O consumo total é de 32 kWh, com gasto estimado de R$ 29.44.
 
-```json
-{
-  "fulfillmentText": "O consumo atual da residência é de 128.5 kWh."
-}
+Usuário: E quanto ela gasta?
+
+Chatbot: O gasto estimado do cômodo Banheiro é de R$ 29.44.
 ```
+
+**Integração com o frontend:**
+
+A interface do chatbot está disponível nos seguintes arquivos:
+
+- `frontend/chatbot.html`: estrutura da página e interface da conversa.
+- `frontend/chatbot.js`: envio das mensagens ao backend, recebimento das respostas e manutenção da sessão.
+- `frontend/styles.css`: estilos visuais da interface.
+
+**Dependências e configuração:**
+
+- Biblioteca `@google-cloud/dialogflow` para comunicação com o Dialogflow ES.
+- Variável `DIALOGFLOW_PROJECT_ID` para identificar o projeto do Dialogflow.
+- Variável `GOOGLE_APPLICATION_CREDENTIALS` para indicar o arquivo JSON de autenticação da conta de serviço.
+- Cloudflare Tunnel para disponibilizar temporariamente o webhook local ao Dialogflow ES.
+
+As credenciais devem permanecer fora do repositório e não devem ser compartilhadas ou versionadas.
+
+**Situação dos testes:**
+
+A integração entre frontend, backend, Dialogflow ES e Cloudflare Tunnel foi testada com sucesso. Foram verificadas as consultas de consumo geral, consumo por cômodo e gasto por cômodo utilizando o contexto da conversa.
 
 **Dependências e situação dos testes:**
 
@@ -470,6 +510,17 @@ Utilize o recurso **Try it now** do Dialogflow para enviar perguntas como:
 - Quanto a cozinha está consumindo?
 - Qual é o consumo do banheiro?
 
+**5. Acessar a interface do chatbot**
+
+Com o backend em execução, abra o navegador e acesse:
+
+```text
+http://localhost:3000/frontend/chatbot.html
+```
+
+A interface permite enviar mensagens ao assistente, visualizar as respostas e acompanhar o histórico da conversa.
+
+
 **Observações importantes:**
 
 - O endereço do Cloudflare Quick Tunnel é temporário e pode mudar quando o túnel for reiniciado.
@@ -575,12 +626,12 @@ A estrutura definitiva será alinhada com o integrante responsável pelo banco d
 - [x] Implementação do endpoint de ranking dos aparelhos.
 - [x] Integração do ranking de aparelhos com o frontend.
 - [x] Implementação das rotas de consulta individual de aparelhos e das rotas dos cômodos.
-- [ ] Validação das consultas individuais e dos cômodos com o MySQL.
+- [x] Validação das consultas individuais e dos cômodos com o MySQL.
 - [x] Implementação inicial da detecção de anomalias com Isolation Forest.
 - [x] Criação da API Python utilizando Flask.
 - [x] Integração entre a API Node.js e a API Python.
 - [x] Teste da análise de consumo por meio do PowerShell.
-- [ ] Integração da análise com o histórico real de consumo do banco de dados.
+- [x] Integração da análise com o histórico real de consumo do banco de dados.
 - [x] Criação do agente e configuração das intenções no Dialogflow ES.
 - [x] Implementação do webhook do chatbot no backend.
 - [x] Integração do Dialogflow ES com o backend utilizando Cloudflare Tunnel.
@@ -589,7 +640,17 @@ A estrutura definitiva será alinhada com o integrante responsável pelo banco d
 - [x] Implementação do gráfico individual de consumo por cômodo.
 - [x] Exibição dinâmica dos aparelhos de cada cômodo.
 - [x] Tratamento de cômodos sem cadastro no frontend.
-- [ ] Integração com a estrutura definitiva de dados.
+- [x] Integração com a estrutura definitiva de dados.
+- [x] Criação do serviço de comunicação com o Dialogflow ES.
+- [x] Implementação do endpoint POST `/api/chatbot/mensagem`.
+- [x] Implementação do endpoint POST `/api/chatbot/webhook`.
+- [x] Implementação da intenção `ConsultarConsumoGeral`.
+- [x] Implementação da intenção `ConsultarConsumoComodo`.
+- [x] Implementação da intenção `ConsultarGastoComodo`.
+- [x] Configuração do contexto `contexto-comodo` para continuidade das conversas.
+- [x] Integração do chatbot com o frontend.
+- [x] Validação das consultas de consumo geral e por cômodo.
+- [x] Validação da consulta de gasto utilizando o contexto da conversa.
 
 ## 10. Histórico de alterações
 
@@ -1037,12 +1098,21 @@ Também foram implementadas melhorias na validação das requisições, no trata
 - [x] Validação da integração utilizando PowerShell.
 
 #### 6. Chatbot
-- [x] Implementação do endpoint `POST /api/chatbot/webhook`.
+- [x] Implementação do endpoint `POST /api/chatbot/mensagem` para comunicação com o Dialogflow ES.
+- [x] Implementação do endpoint `POST /api/chatbot/webhook` para processamento das intenções.
+- [x] Integração com o Dialogflow ES utilizando a biblioteca `@google-cloud/dialogflow`.
+- [x] Configuração da autenticação por meio de conta de serviço.
 - [x] Processamento da intenção `ConsultarConsumoGeral`.
 - [x] Processamento da intenção `ConsultarConsumoComodo`.
+- [x] Processamento da intenção `ConsultarGastoComodo`.
+- [x] Implementação do contexto `contexto-comodo` para manter o cômodo mencionado durante a conversa.
 - [x] Integração das consultas do chatbot com os dados armazenados no MySQL.
 - [x] Retorno das respostas por meio da propriedade `fulfillmentText`.
-- [x] Testes locais das intenções utilizando requisições simuladas do Dialogflow ES.
+- [x] Implementação da interface do chatbot no frontend.
+- [x] Integração do frontend com o backend para envio e recebimento de mensagens.
+- [x] Manutenção da sessão da conversa por meio do `sessionId`.
+- [x] Configuração do Cloudflare Tunnel para comunicação entre o Dialogflow ES e o backend local.
+- [x] Testes das intenções e da comunicação entre frontend, backend e Dialogflow ES.
 
 #### 7. Tratamento de erros e validações
 - [x] Implementação de tratamento de exceções nos controllers.
@@ -1110,3 +1180,43 @@ A dashboard principal já apresenta informações reais fornecidas pelo backend,
 A integração das funcionalidades de cadastro, edição e exclusão de aparelhos com os formulários do frontend, assim como a integração visual do Machine Learning e do chatbot, permanece como etapa de desenvolvimento.
 
 **Status:** Integração da dashboard principal e do monitoramento por cômodos concluída.
+
+### Versão 0.7.0 — Integração do chatbot com Dialogflow ES e frontend
+
+Nesta atualização, foi concluída a integração do chatbot com o Dialogflow ES, permitindo que os usuários consultem informações sobre o consumo energético da residência e de cômodos específicos por meio de uma interface de conversa.
+
+**Alterações realizadas:**
+
+#### 1. Backend
+- [x] Criação do serviço `chatbotService.js` para comunicação com o Dialogflow ES.
+- [x] Implementação do endpoint `POST /api/chatbot/mensagem`.
+- [x] Implementação do endpoint `POST /api/chatbot/webhook`.
+- [x] Processamento das intenções identificadas pelo Dialogflow.
+- [x] Integração das consultas com os services de consumo e cômodos.
+
+#### 2. Dialogflow ES
+- [x] Configuração da intenção `ConsultarConsumoGeral`.
+- [x] Configuração da intenção `ConsultarConsumoComodo`.
+- [x] Configuração da intenção `ConsultarGastoComodo`.
+- [x] Configuração do contexto `contexto-comodo`.
+- [x] Implementação da continuidade da conversa para consultar o gasto do último cômodo mencionado.
+
+#### 3. Frontend
+- [x] Criação da interface `frontend/chatbot.html`.
+- [x] Implementação da comunicação com o backend em `frontend/chatbot.js`.
+- [x] Exibição das mensagens do usuário e das respostas do assistente.
+- [x] Manutenção da sessão da conversa por meio do `sessionId`.
+- [x] Disponibilização dos arquivos do frontend pelo servidor Express.
+
+#### 4. Testes
+- [x] Teste de consulta do consumo geral da residência.
+- [x] Teste de consulta do consumo de cômodos específicos.
+- [x] Teste de consulta do gasto de um cômodo mencionado anteriormente.
+- [x] Teste de continuidade da conversa entre diferentes cômodos.
+- [x] Validação da comunicação entre frontend, backend e Dialogflow ES.
+
+**Resultado da versão 0.7.0:**
+
+O chatbot está integrado ao frontend e ao backend, permitindo consultas de consumo geral, consumo por cômodo e gastos por meio de perguntas complementares.
+
+**Status:** Integração do chatbot concluída e validada no ambiente de desenvolvimento.

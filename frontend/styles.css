@@ -649,6 +649,50 @@ body.estilo-background {
     box-shadow: var(--shadow-glow);
 }
 
+/* --- ÁREA DE CONVERSA DO CHATBOT --- */
+.chat-conversa {
+    flex: 1;
+    min-height: 350px;
+    max-height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+}
+
+.mensagem {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.mensagem-bot {
+    align-self: flex-start;
+    background: rgba(51, 65, 85, 0.9);
+}
+
+.mensagem-usuario {
+    align-self: flex-end;
+    background: var(--accent-blue);
+}
+
+.chat-mensagens {
+    flex: 1;
+    min-height: 350px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+}
+
 /* --- RESPONSIVIDADE --- */
 @media (max-width: 900px) {
     .ajuste_lateral_conteudo, .chatbot_conteiner, .forms_conteiner {

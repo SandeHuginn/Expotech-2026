@@ -1,54 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>SmartHome Monitor - Chatbot</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class = "estilo-background">
-    <button class = "botao_retorno" onclick= "window.location.href = 'index.html'">
-        <span class = "seta">
-            &#8592;
-        </span>
-        <span class = "texto_voltar">
-            Voltar
-        </span>
+<body class="estilo-background">
+
+    <button class="botao_retorno" onclick="window.location.href = 'index.html'">
+        <span class="seta">&#8592;</span>
+        <span class="texto_voltar">Voltar</span>
     </button>
 
-    <div class = "chatbot_conteiner">
-        <div class = "chatbot-lado lado-esquerdo">
-            <div class = "chat-titulo">
-                <h2>
-                    Agente de IA
-                </h2>
-                
+    <div class="chatbot_conteiner">
+
+        <div class="chatbot-lado lado-esquerdo">
+
+            <div class="chat-titulo">
+                <h2>Agente de IA</h2>
             </div>
-            
-            <div class = "chat-input-container">
-                <input type = "text" class = "chat-input-field" placeholder = "Digite sua mensagem...">
-                <button class = "chat-send-button">
+
+            <!-- Área onde serão exibidas as mensagens da conversa. -->
+            <div class="chat-conversa" id="chatConversa">
+                <div class="mensagem mensagem-bot">
+                    Olá! Sou o assistente do SmartHome Monitor.
+                    Como posso ajudar você?
+                </div>
+            </div>
+
+            <!-- Campo utilizado para enviar mensagens. -->
+            <div class="chat-input-container">
+                <input
+                    type="text"
+                    class="chat-input-field"
+                    id="campoMensagem"
+                    placeholder="Digite sua mensagem..."
+                    autocomplete="off"
+                >
+
+                <button
+                    class="chat-send-button"
+                    id="botaoEnviar"
+                    type="button"
+                >
                     Enviar
                 </button>
             </div>
 
         </div>
 
-        <div class = "chatbot-lado lado-direito">
+        <div class="chatbot-lado lado-direito">
 
-            <div class = "chat-titulo">
-                <h2>
-                    Histórico de Mensagens
-                </h2>
+            <div class="chat-titulo">
+                <h2>Histórico de Mensagens</h2>
             </div>
 
-            <div class = "chat-mensagens">
-
+            <div class="chat-mensagens" id="historicoMensagens">
             </div>
-    
+
         </div>
+
     </div>
 
-
+<script src="chatbot.js"></script>
 </body>
 </html>

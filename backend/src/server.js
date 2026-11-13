@@ -2,7 +2,10 @@
 // Importando as bibliotecas
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+require('dotenv').config({
+    path: require('path').resolve(__dirname, '../.env')
+});
+const path = require('path');
 
 // Importando as rotas
 const dashboardRoutes = require('./routes/dashboardRoutes');
@@ -20,6 +23,11 @@ const PORT = process.env.PORT || 3000;
 // Configurações do servidor
 app.use(cors());
 app.use(express.json());
+
+// Disponibiliza os arquivos da pasta frontend.
+app.use('/frontend', express.static(
+    path.resolve(__dirname, '../../frontend')
+));
 
 // Registrando as rotas
 app.use('/api/dashboard', dashboardRoutes);
